@@ -84,6 +84,7 @@ class HistoryTable extends Component {
       showDeleteModal,
       showUndoModal
     } = this.state;
+
     return (
       <div className={"col-md-12"} style={{ paddingTop: 12 }}>
         <PopUpWarning
@@ -96,7 +97,6 @@ class HistoryTable extends Component {
           popUpWarningType="danger"
           onConfirm={async () => {
             importToDelete && (await this.props.deleteImport(importToDelete));
-            this.setState({ importToDelete: null, showDeleteModal: false });
           }}
         />
         <PopUpWarning
@@ -109,7 +109,6 @@ class HistoryTable extends Component {
           popUpWarningType="danger"
           onConfirm={async () => {
             importToUndo && (await this.props.undoImport(importToUndo));
-            this.setState({ importToUndo: null, showUndoModal: false });
           }}
         />
         <Table

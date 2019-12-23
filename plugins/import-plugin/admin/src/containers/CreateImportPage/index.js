@@ -4,34 +4,35 @@
  *
  */
 
-import React, {Component, memo} from 'react';
-import {HeaderNav, LoadingIndicator, PluginHeader} from 'strapi-helper-plugin'
-import {Button, InputNumber, InputText, Label, Select} from '@buffetjs/core'
-import pluginId from '../../pluginId';
-import Container from "../../components/Container"
-import Row from "../../components/Row"
-import Block from "../../components/Block"
-import UploadFileForm from '../../components/UploadFileForm'
-import axios from 'axios'
-import _ from 'lodash'
-import {api_url} from "../../constants";
+import React, { Component } from "react";
+import {
+  HeaderNav,
+  LoadingIndicator,
+  PluginHeader,
+  request
+} from "strapi-helper-plugin";
+import { get, has, isEmpty, pickBy, set } from "lodash";
+import { Button, InputNumber, InputText, Label, Select } from "@buffetjs/core";
+import pluginId from "../../pluginId";
+import Container from "../../components/Container";
+import Row from "../../components/Row";
+import Block from "../../components/Block";
+import UploadFileForm from "../../components/UploadFileForm";
 import MappingTable from "../../components/MappingTable";
 import ExternalUrlForm from "../../components/ExternalUrlForm";
 import RawInputForm from "../../components/RawInputForm";
 
-
-const getUrl = to => to ? `/plugins/${pluginId}/${to}` : `/plugins/${pluginId}`;
-
+const getUrl = to =>
+  to ? `/plugins/${pluginId}/${to}` : `/plugins/${pluginId}`;
 
 class CreateImportPage extends Component {
-
   state = {
-    importSource: 'upload',
-    selectedContentType: '',
+    importSource: "upload",
+    selectedContentType: "",
     loading: true,
     models: [],
     modelOptions: [],
-    inputFormatSettings: {delimiter: ',', skipRows: 0},
+    inputFormatSettings: { delimiter: ",", skipRows: 0 },
     fieldMapping: {},
     analysing: false,
     analyzeError: null,
@@ -39,47 +40,45 @@ class CreateImportPage extends Component {
     analysis: null,
     saving: false,
     saveError: null,
-    created: null,
-  }
+    created: null
+  };
 
   importSources = [
-    {label: 'External URL ', value: 'url'},
-    {label: 'Upload file', value: 'upload'},
-    {label: 'Raw text', value: 'raw'}
-  ]
+    { label: "External URL ", value: "url" },
+    { label: "Upload file", value: "upload" },
+    { label: "Raw text", value: "raw" }
+  ];
 
   /*Check if user specified any field mapping or not*/
   isEmptyMapping = () => {
-    const {fieldMapping} = this.state
-    return _.isEmpty(_.pickBy(fieldMapping, o => o.targetField !== 'none'))
-  }
-
-  getTargetModel = () => {
-    const {models} = this.state;
-    if (!models) return null; //
-    return models.find(model => model.name === this.state.selectedContentType)
+    const { fieldMapping } = this.state;
+    return isEmpty(pickBy(fieldMapping, o => o.targetField !== "none"));
   };
 
-  saveImportConfig = async (importConfig) => {
-    this.setState({saving: true}, async () => {
+  getTargetModel = () => {
+    const { models } = this.state;
+    if (!models) return null; //
+
+    return models.find(model => model.uid === this.state.selectedContentType);
+  };
+
+  saveImportConfig = async importConfig => {
+    this.setState({ saving: true }, async () => {
       try {
-        await axios.post(api_url + 'import-plugin', importConfig)
-        this.setState({saving: false}, () => {
-          strapi.notification.info(
-            `Import Started`
-          );
-        })
+        await request("/import-plugin", { method: "POST", body: importConfig });
+
+        this.setState({ saving: false }, () => {
+          strapi.notification.info("Data imported");
+        });
       } catch (e) {
-        strapi.notification.error(
-          `${e}`
-        );
+        strapi.notification.error(`${e}`);
       }
-    })
-  }
+    });
+  };
 
   onSaveImport = () => {
-    const {selectedContentType, fieldMapping} = this.state;
-    const {analysisConfig} = this;
+    const { selectedContentType, fieldMapping } = this.state;
+    const { analysisConfig } = this;
 
     const analysisConfigWithSettings = this.getAnalysisConfigWithSettings(
       analysisConfig
@@ -95,77 +94,69 @@ class CreateImportPage extends Component {
   };
 
   setFieldMapping = fieldMapping => {
-    this.setState({fieldMapping});
+    this.setState({ fieldMapping });
   };
 
-  preAnalyze = async (analysisConfigWithSettings) => {
-    this.setState({analysing: true}, async () => {
-      console.log(analysisConfigWithSettings)
+  preAnalyze = async analysisConfigWithSettings => {
+    this.setState({ analysing: true }, async () => {
       try {
-        const res = await axios.post(
-          api_url + 'import-plugin/preAnalyzeImportFile',
-          analysisConfigWithSettings)
-        if (res && res.data) {
-          console.log(res.data)
-          this.setState({analysis: res.data, analysing: false}, () => {
-            strapi.notification.success(
-              `Analyzed Successfully`
-            );
-          })
-        } else {
-          this.setState({analysing: false}, () => {
-            strapi.notification.error(
-              `Analyze Failed, try again`
-            );
-          })
-        }
+        const response = await request("/import-plugin/preAnalyzeImportFile", {
+          method: "POST",
+          body: analysisConfigWithSettings
+        });
+
+        this.setState({ analysis: response, analysing: false }, () => {
+          strapi.notification.success(`Analyzed Successfully`);
+        });
       } catch (e) {
-        this.setState({analysing: false}, () => {
-          strapi.notification.error(
-            `${e}`
-          );
-        })
+        this.setState({ analysing: false }, () => {
+          strapi.notification.error(`Analyze Failed, try again`);
+          strapi.notification.error(`${e}`);
+        });
       }
-    })
-  }
+    });
+  };
 
   getModels = async () => {
-    this.setState({loading: true})
+    this.setState({ loading: true });
+
     try {
-      let models = null
-      const res = await axios.get(api_url + 'content-type-builder/models')
-      if (res && res.data && res.data.allModels) {
-        models = res.data.allModels.filter(m => ['permission', 'role', 'user', 'importconfig', 'importeditem'].indexOf(m.name) < 0)
-      }
-      let modelOptions = []
-      if (models) {
-        modelOptions = _.map(models, (m) => {
-          return {
-            label: m.name,
-            value: m.name
-          }
-        })
-      }
-      this.setState({loading: false})
-      return {models, modelOptions}
+      const response = await request("/content-type-builder/content-types", {
+        method: "GET"
+      });
+
+      // Remove content types from models
+      const models = get(response, ["data"], []).filter(
+        obj => !has(obj, "plugin")
+      );
+      const modelOptions = models.map(model => {
+        return {
+          label: get(model, ["schema", "name"], ""),
+          value: model.uid
+        };
+      });
+
+      this.setState({ loading: false });
+
+      return { models, modelOptions };
     } catch (e) {
-      this.setState({loading: false}, () => {
-        strapi.notification.error(
-          `${e}`
-        );
-      })
+      this.setState({ loading: false }, () => {
+        strapi.notification.error(`${e}`);
+      });
     }
-    return []
-  }
+    return [];
+  };
 
-  selectImportSource = (importSource) => {
-    this.setState({importSource, inputFormatSettings: {delimiter: ',', skipRows: 0},
+  selectImportSource = importSource => {
+    this.setState({
+      importSource,
+      inputFormatSettings: { delimiter: ",", skipRows: 0 }
     });
-  }
+  };
 
-  selectImportDest = (selectedContentType) => {
-    this.setState({selectedContentType});
-  }
+  selectImportDest = selectedContentType => {
+    this.setState({ selectedContentType });
+  };
 
   onRequestAnalysis = async analysisConfig => {
     this.analysisConfig = analysisConfig;
@@ -174,11 +165,11 @@ class CreateImportPage extends Component {
       analysisConfig
     );
 
-    this.preAnalyze(analysisConfigWithSettings)
+    this.preAnalyze(analysisConfigWithSettings);
   };
 
   getAnalysisConfigWithSettings = analysisConfig => {
-    const {inputFormatSettings} = this.state;
+    const { inputFormatSettings } = this.state;
 
     return {
       ...analysisConfig,
@@ -191,14 +182,23 @@ class CreateImportPage extends Component {
 
   componentDidMount() {
     this.getModels().then(res => {
-      const {models, modelOptions} = res
-      this.setState({models, modelOptions, selectedContentType: modelOptions ? modelOptions[0].label : ''})
-    })
+      const { models, modelOptions } = res;
+      this.setState({
+        models,
+        modelOptions,
+        selectedContentType: modelOptions ? modelOptions[0].value : ""
+      });
+    });
   }
 
-
   render() {
-    const {modelOptions, loading, inputFormatSettings, fieldMapping} = this.state
+    const {
+      modelOptions,
+      loading,
+      inputFormatSettings,
+      fieldMapping
+    } = this.state;
+
     return (
       <Container className={"container-fluid"}>
         <PluginHeader
@@ -210,113 +210,115 @@ class CreateImportPage extends Component {
             links={[
               {
                 name: "Import Data",
-                to: getUrl(''),
+                to: getUrl("")
               },
               {
                 name: "Import History",
-                to: getUrl('history'),
-              },
+                to: getUrl("history")
+              }
             ]}
-            style={{marginTop: '4.4rem'}}
+            style={{ marginTop: "4.4rem" }}
           />
         </Row>
         <div className={"row"}>
           <Block
             title="General"
             description="Configure the Import Source & Destination"
-            style={{marginBottom: 12}}
+            style={{ marginBottom: 12 }}
           >
-            {loading && (
-              <LoadingIndicator/>
-            )}
+            {loading && <LoadingIndicator />}
             {!loading && modelOptions && (
-              <row className={'col-12'}>
-                <form className={'row'}>
-                    <div className={'col-4'}>
-                      <Label htmlFor="importSource">Import Source</Label>
-                      <Select
-                        name="importSource"
-                        options={this.importSources}
-                        value={this.state.importSource} // observe our state
-                        onChange={({target: {value}}) => this.selectImportSource(value)}
-                      />
-                    </div>
-                    <div className={'col-4'}>
-                      <Label htmlFor="importDest">Import Destination</Label>
-                      <Select
-                        value={this.state.selectedContentType} // observe our state
-                        name="importDest"
-                        options={this.state.modelOptions}
-                        onChange={({target: {value}}) => this.selectImportDest(value)}
-                      />
-                    </div>
+              <div className={"col-12"}>
+                <form className={"row"}>
+                  <div className={"col-4"}>
+                    <Label htmlFor="importSource">Import Source</Label>
+                    <Select
+                      name="importSource"
+                      options={this.importSources}
+                      value={this.state.importSource} // observe our state
+                      onChange={({ target: { value } }) =>
+                        this.selectImportSource(value)
+                      }
+                    />
+                  </div>
+                  <div className={"col-4"}>
+                    <Label htmlFor="importDest">Import Destination</Label>
+                    <Select
+                      value={this.state.selectedContentType} // observe our state
+                      name="importDest"
+                      options={this.state.modelOptions}
+                      onChange={({ target: { value } }) =>
+                        this.selectImportDest(value)
+                      }
+                    />
+                  </div>
                 </form>
                 <form className="">
                   <Row>
-                    {this.state.importSource === 'upload' && (
+                    {this.state.importSource === "upload" && (
                       <UploadFileForm
                         onRequestAnalysis={this.onRequestAnalysis}
                         loadingAnalysis={this.state.analysing}
                       />
                     )}
-                    {this.state.importSource === 'url' && (
+                    {this.state.importSource === "url" && (
                       <ExternalUrlForm
                         onRequestAnalysis={this.onRequestAnalysis}
                         loadingAnalysis={this.state.analysing}
                       />
                     )}
-                    {this.state.importSource === 'raw' && (
+                    {this.state.importSource === "raw" && (
                       <RawInputForm
                         onRequestAnalysis={this.onRequestAnalysis}
                         loadingAnalysis={this.state.analysing}
                       />
                     )}
                   </Row>
-                  {this.state.analysis && this.state.analysis.sourceType === 'csv' && ( // show only when data type is CSV
-                    <Row className={'row'}>
-                      <div className={'col-4'}>
-                        <Label message={'Delimiter'} htmlFor={'delimiterInput'}/>
-                        <InputText
-                          name={'delimiterInput'}
-                          onChange={
-                            ({target: {value}}) => {
-                              const state = _.set(
+                  {this.state.analysis &&
+                  this.state.analysis.sourceType === "csv" && ( // show only when data type is CSV
+                      <Row className={"row"}>
+                        <div className={"col-4"}>
+                          <Label
+                            message={"Delimiter"}
+                            htmlFor={"delimiterInput"}
+                          />
+                          <InputText
+                            name={"delimiterInput"}
+                            onChange={({ target: { value } }) => {
+                              const state = set(
                                 this.state,
-                                ['inputFormatSettings', 'delimiter'],
+                                ["inputFormatSettings", "delimiter"],
                                 value
-                              )
-                              this.setState(state)
-                            }
-                          }
-                          value={inputFormatSettings.delimiter}
-                        />
-                      </div>
-                      <div className={'col-4'}>
-                        <Label message={'Skip Rows'} htmlFor={'skipInput'}/>
-                        <InputNumber
-                          name={'skipInput'}
-                          onChange={
-                            ({target: {value}}) => {
-                              const state = _.set(
+                              );
+                              this.setState(state);
+                            }}
+                            value={inputFormatSettings.delimiter}
+                          />
+                        </div>
+                        <div className={"col-4"}>
+                          <Label message={"Skip Rows"} htmlFor={"skipInput"} />
+                          <InputNumber
+                            name={"skipInput"}
+                            onChange={({ target: { value } }) => {
+                              const state = set(
                                 this.state,
-                                ['inputFormatSettings', 'skipRows'],
+                                ["inputFormatSettings", "skipRows"],
                                 value
-                              )
-                              this.setState(state)
-                            }
-                          }
-                          value={inputFormatSettings.skipRows}
-                        />
-                      </div>
-                    </Row>
-                  )}
+                              );
+                              this.setState(state);
+                            }}
+                            value={inputFormatSettings.skipRows}
+                          />
+                        </div>
+                      </Row>
+                    )}
                 </form>
-              </row>
+              </div>
             )}
           </Block>
         </div>
         {this.state.analysis && (
-          <Row class="row">
+          <Row className="row">
             <MappingTable
               analysis={this.state.analysis}
               targetModel={this.getTargetModel()}
@@ -324,9 +326,9 @@ class CreateImportPage extends Component {
             />
             {!this.state.saving && (
               <Button
-                style={{marginTop: 12}}
+                style={{ marginTop: 12 }}
                 label={"Run the Import"}
-                color={this.isEmptyMapping() ? 'delete' : 'primary'}
+                color={this.isEmptyMapping() ? "delete" : "primary"}
                 disabled={this.isEmptyMapping()}
                 onClick={this.onSaveImport}
               />
@@ -334,8 +336,8 @@ class CreateImportPage extends Component {
           </Row>
         )}
       </Container>
-    )
+    );
   }
 }
 
-export default memo(CreateImportPage)
+export default CreateImportPage;
