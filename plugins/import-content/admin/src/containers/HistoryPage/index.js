@@ -17,7 +17,7 @@ const getUrl = to =>
 class HistoryPage extends Component {
 
   state = {
-    loading: false,
+    loading: true,
     importConfigs: []
   };
 
