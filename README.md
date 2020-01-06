@@ -14,6 +14,8 @@ Based on strapi-beta: 18.3
 
 yarn install
 
+yarn build
+
 ------
 
 yarn develop --watch-admin 
