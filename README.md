@@ -6,7 +6,7 @@ All the credits belong to https://github.com/jbeuckm who developed this wonderfu
 
 The current plugin only introduced some new UI changes on the original plugin. 
 
-Based on strapi-beta: 17.5
+Based on strapi-beta: 18.3
 
 ----  
 
