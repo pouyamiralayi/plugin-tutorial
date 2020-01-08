@@ -26,6 +26,7 @@ module.exports = {
   },
 
   index: async ctx => {
+    console.log(strapi.plugins["import-content"].controllers)
     const entries = await strapi.query("importconfig", "import-content").find();
     const withCounts = entries.map(entry =>
       ({
@@ -64,5 +65,7 @@ module.exports = {
     console.log("undo", importId);
     await services["importcontent"].undoItems(importConfig);
     ctx.send(importConfig);
-  }
+  },
+
+
 };
