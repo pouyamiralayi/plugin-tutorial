@@ -80,12 +80,12 @@ class ExportPage extends Component {
       if (!has(mapping, fieldName)) {
         /*TODO calculate format*/
         mapping[fieldName] = {sourceField, sourceComp, format: "string"};
-        this.setState({mapping}, () => {
+        this.setState({showCreateModal: false, mapping}, () => {
           console.log("extended state: ", this.state.mapping)
+          strapi.notification.success("Created")
         });
-        this.setState({showCreateModal: false})
       } else {
-        this.setState({createModalError: "Field name already Exists!"})
+        strapi.notification.warning("Field name already Exists!")
       }
     });
   };
