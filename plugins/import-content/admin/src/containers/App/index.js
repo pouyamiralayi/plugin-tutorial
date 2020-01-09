@@ -14,7 +14,7 @@ import pluginId from '../../pluginId';
 // Containers
 import HomePage from '../HomePage';
 import HistoryPage from "../HistoryPage";
-
+import ExportPage from "../ExportPage"
 const App = () => {
   return (
     <div>
@@ -25,6 +25,11 @@ const App = () => {
         <Route
           path={`/plugins/${pluginId}/history`}
           component={HistoryPage}
+          exact
+        />
+        <Route
+          path={`/plugins/${pluginId}/export`}
+          component={ExportPage}
           exact
         />
         <Route component={NotFound} />

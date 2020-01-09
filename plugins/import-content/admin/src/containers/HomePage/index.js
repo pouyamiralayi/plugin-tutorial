@@ -150,6 +150,10 @@ class HomePage extends Component {
             {
               name: "Import History",
               to: getUrl("history")
+            },
+            {
+              name: "Export Data",
+              to: getUrl("export")
             }
           ]}
           style={{marginTop: "4.4rem"}}
