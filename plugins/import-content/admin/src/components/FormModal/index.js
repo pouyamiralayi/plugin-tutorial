@@ -9,27 +9,17 @@ import ModalHeader
 import {Select, InputText, Button, Label} from '@buffetjs/core'
 import {get} from "lodash"
 import Row from '../Row'
+import Block from "../Block";
 
 class FormModal extends Component {
+
   state = {
     fieldName: "",
     sourceField: "",
-    sourceComp: null
+    sourceComp: null,
+    selectedTarget: ""
   };
 
-
-  fillOptions = () => {
-    const targetModel = this.props.targetModel;
-    const schemaAttributes = get(targetModel, ["schema", "attributes"], {});
-    const options = Object.keys(schemaAttributes)
-      .map(fieldName => {
-        const attribute = get(schemaAttributes, [fieldName], {});
-
-        return attribute.type && {label: fieldName, value: fieldName};
-      })
-      .filter(obj => obj !== undefined);
-    return [{label: "None", value: "none"}, ...options];
-  };
 
   setValue = (val) => {
     this.setState({fieldName: val})
@@ -48,8 +38,22 @@ class FormModal extends Component {
     this.props.onFormSave({fieldName, sourceField, sourceComp})
   };
 
+
+  fillOptions = () => {
+    const targetModel = this.props.targetModel;
+    const schemaAttributes = get(targetModel, ["schema", "attributes"], {});
+    const options = Object.keys(schemaAttributes)
+      .map(fieldName => {
+        const attribute = get(schemaAttributes, [fieldName], {});
+
+        return attribute.type && {label: fieldName, value: fieldName};
+      })
+      .filter(obj => obj !== undefined);
+    return [{label: "None", value: "none"}, ...options];
+  };
+
   render() {
-    const {sourceField, fieldName} = this.state
+    const {sourceField, fieldName, selectedTarget} = this.state
     return (
       <Modal
         isOpen={this.props.isOpen}
@@ -74,7 +78,17 @@ class FormModal extends Component {
           <ModalForm>
             <ModalBody>
               <div className={"container-fluid"}>
-                <div className={"row"}>
+                <Row className={"col-4 row"}>
+                  <Label htmlFor={"targetContentType"}>Select Content Type</Label>
+                  <Select
+                    name={"targetContentType"}
+                    options={this.props.modelOptions}
+                    value={this.props.selectedTarget}
+                    onChange={({target: {value}}) =>
+                      this.props.onSelectTarget(value)}
+                  />
+                </Row>
+                <Row className={"row"}>
                   <div className={"col-4"}>
                     <Label htmlFor="fieldSource">Field Name</Label>
                     <InputText
@@ -91,14 +105,14 @@ class FormModal extends Component {
                     <Label htmlFor="fieldSource">Source</Label>
                     <Select
                       name={"fieldSource"}
-                      options={this.fillOptions()}
+                      options={this.fillOptions}
                       value={this.state.sourceField}
                       onChange={({target: {value}}) =>
                         this.onChange(value)
                       }
                     />
                   </div>
-                </div>
+                </Row>
                 <Row className={""}>
                   <Button
                     style={{marginBottom: 12}}
@@ -117,7 +131,12 @@ class FormModal extends Component {
 
   onOpen = () => {
     console.log("createModal opened!");
-    this.setState({fieldName: "", sourceField: "", sourceComp: ""})
+    this.setState({
+      fieldName: "",
+      sourceField: "",
+      sourceComp: "",
+      selectedTarget: this.props.modelOptions && this.props.modelOptions[0].value
+    })
   }
 
 }
@@ -128,7 +147,10 @@ FormModal.propTypes = {
   onClose: PropTypes.func,
   onToggle: PropTypes.func,
   isOpen: PropTypes.bool,
-  targetModel: PropTypes.object
+  selectedTarget:PropTypes.string.isRequired,
+  targetModel: PropTypes.object,
+  modelOptions: PropTypes.array.isRequired,
+  onSelectTarget: PropTypes.func.isRequired,
 };
 
 export default FormModal

@@ -40,7 +40,7 @@ class ExportPage extends Component {
   deleteField = (fieldName) => {
     let {mapping} = this.state;
     mapping = omit(mapping, [fieldName]);
-    this.setState({showDeleteModal: false, mapping},() => {
+    this.setState({showDeleteModal: false, mapping}, () => {
       strapi.notification.success("Deleted")
     })
   };
@@ -108,6 +108,7 @@ class ExportPage extends Component {
     });
   };
 
+
   componentDidMount = async () => {
     const res = await this.getModels();
     const {models, modelOptions} = res;
@@ -115,7 +116,10 @@ class ExportPage extends Component {
   };
 
   render() {
-    const {showCreateModal, showEditModal, targetModel, selectedTarget, modelOptions, fieldToEdit} = this.state;
+    const {
+      showCreateModal, showEditModal,
+      selectedTarget, modelOptions, fieldToEdit
+    } = this.state;
     return (
       <div className={"container-fluid"} style={{padding: "18px 30px"}}>
         <PluginHeader
@@ -145,16 +149,16 @@ class ExportPage extends Component {
             description="Export your Content-Types"
             style={{marginBottom: 12}}
           >
-            <Row className={""}>
-              <Label htmlFor={"targetContentType"}>Select Content Type</Label>
-              <Select
-                name={"targetContentType"}
-                options={modelOptions}
-                value={selectedTarget}
-                onChange={({target: {value}}) =>
-                  this.onSelectTarget(value)}
-              />
-            </Row>
+            {/*<Row className={""}>*/}
+            {/*  <Label htmlFor={"targetContentType"}>Select Content Type</Label>*/}
+            {/*  <Select*/}
+            {/*    name={"targetContentType"}*/}
+            {/*    options={modelOptions}*/}
+            {/*    value={selectedTarget}*/}
+            {/*    onChange={({target: {value}}) =>*/}
+            {/*      this.onSelectTarget(value)}*/}
+            {/*  />*/}
+            {/*</Row>*/}
             <Row className={""}>
               <Button onClick={() => this.showCreateModal()}>Add new Field</Button>
             </Row>
@@ -168,6 +172,9 @@ class ExportPage extends Component {
                   onToggle={() => this.setState(prevState => ({
                     showCreateModal: !prevState.showCreateModal
                   }))}
+                  modelOptions={modelOptions}
+                  onSelectTarget={this.onSelectTarget}
+                  selectedTarget={this.state.selectedTarget}
                   targetModel={this.getTargetModel()}
                 />
                 <PopUpWarning
@@ -189,8 +196,11 @@ class ExportPage extends Component {
                   onToggle={() => this.setState(prevState => ({
                     showEditModal: !prevState.showEditModal
                   }))}
+                  modelOptions={this.state.modelOptions}
                   targetModel={this.getTargetModel()}
                   fieldToEdit={fieldToEdit}
+                  selectedTarget={selectedTarget}
+                  onSelectTarget={this.onSelectTarget}
                 />
                 <ExportMapping
                   // undoImport={this.undoImport}
@@ -198,7 +208,6 @@ class ExportPage extends Component {
                   showDelete={this.showDelete}
                   showEdit={this.showEdit}
                   mapping={this.state.mapping}
-
                 />
               </Row>
             )}
@@ -208,6 +217,9 @@ class ExportPage extends Component {
     )
   }
 
+  onSelectTarget = (selectedTarget) => {
+    this.setState({selectedTarget})
+  };
 
   showCreateModal = () => {
     console.log("showCreateModal")
@@ -216,10 +228,6 @@ class ExportPage extends Component {
     })
   };
 
-
-  onSelectTarget = (selectedTarget) => {
-    this.setState({selectedTarget})
-  };
 
   getTargetModel = () => {
     const {models} = this.state;

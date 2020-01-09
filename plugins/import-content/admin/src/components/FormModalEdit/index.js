@@ -9,6 +9,7 @@ import ModalHeader
 import {Select, InputText, Button, Label} from '@buffetjs/core'
 import {get} from "lodash"
 import Row from '../Row'
+import Block from "../Block";
 
 class FormModalEdit extends Component {
   state = {
@@ -17,8 +18,6 @@ class FormModalEdit extends Component {
     sourceField: "",
     sourceComp: ""
   };
-
-
 
   fillOptions = () => {
     const targetModel = this.props.targetModel;
@@ -30,7 +29,8 @@ class FormModalEdit extends Component {
         return attribute.type && {label: fieldName, value: fieldName};
       })
       .filter(obj => obj !== undefined);
-    return [{ label: "None", value: "none" }, ...options];  };
+    return [{label: "None", value: "none"}, ...options];
+  };
 
   setValue = (val) => {
     this.setState({fieldName: val})
@@ -77,6 +77,16 @@ class FormModalEdit extends Component {
           <ModalForm>
             <ModalBody>
               <div className={"container-fluid"}>
+                <Row className={"col-4 row"}>
+                  <Label htmlFor={"targetContentType"}>Select Content Type</Label>
+                  <Select
+                    name={"targetContentType"}
+                    options={this.props.modelOptions}
+                    value={this.props.selectedTarget}
+                    onChange={({target: {value}}) =>
+                      this.props.onSelectTarget(value)}
+                  />
+                </Row>
                 <div className={"row"}>
                   <div className={"col-4"}>
                     <Label htmlFor="fieldSource">Field Name</Label>
@@ -94,7 +104,7 @@ class FormModalEdit extends Component {
                     <Label htmlFor="fieldSource">Source</Label>
                     <Select
                       name={"fieldSource"}
-                      options={this.fillOptions()}
+                      options={this.props.modelOptions}
                       value={sourceField}
                       onChange={({target: {value}}) =>
                         this.onChange(value)
@@ -132,8 +142,11 @@ FormModalEdit.propTypes = {
   onClose: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  targetModel: PropTypes.object.isRequired,
   fieldToEdit:PropTypes.object.isRequired,
+  selectedTarget:PropTypes.string.isRequired,
+  onSelectTarget:PropTypes.func.isRequired,
+  modelOptions:PropTypes.array.isRequired,
+  targetModel:PropTypes.object.isRequired
 };
 
 export default FormModalEdit
