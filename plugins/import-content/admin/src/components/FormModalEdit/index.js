@@ -10,12 +10,14 @@ import {Select, InputText, Button, Label} from '@buffetjs/core'
 import {get} from "lodash"
 import Row from '../Row'
 
-class FormModal extends Component {
+class FormModalEdit extends Component {
   state = {
+    prevFieldName:"",
     fieldName: "",
     sourceField: "",
-    sourceComp: null
+    sourceComp: ""
   };
+
 
 
   fillOptions = () => {
@@ -28,34 +30,35 @@ class FormModal extends Component {
         return attribute.type && {label: fieldName, value: fieldName};
       })
       .filter(obj => obj !== undefined);
-    return [{label: "None", value: "none"}, ...options];
-  };
+    return [{ label: "None", value: "none" }, ...options];  };
 
   setValue = (val) => {
     this.setState({fieldName: val})
   };
 
   onChange = (val) => {
-    if (val == "none") {
+    if(val == "none"){
       this.setState({sourceField: ""})
-    } else {
+    }
+    else {
       this.setState({sourceField: val})
     }
   };
 
   onSave = () => {
-    const {fieldName, sourceField, sourceComp} = this.state
-    this.props.onFormSave({fieldName, sourceField, sourceComp})
+    const {fieldName, sourceField, sourceComp, prevFieldName} = this.state;
+    this.props.onFormSave({fieldName, sourceField, sourceComp, prevFieldName})
   };
 
   render() {
-    const {sourceField, fieldName} = this.state
+    // const {sourceField, fieldName} = this.state
+    const {fieldName, sourceComp, sourceField} = this.state;
     return (
       <Modal
+        onOpened={this.onOpen}
         isOpen={this.props.isOpen}
         onClosed={this.props.onClose}
         onToggle={this.props.onToggle}
-        onOpened={this.onOpen}
       >
         {/*<HeaderModal>*/}
         {/*  <ModalHeader*/}
@@ -84,7 +87,7 @@ class FormModal extends Component {
                       }}
                       placeholder="Field Name"
                       type="text"
-                      value={this.state.fieldName}
+                      value={fieldName}
                     />
                   </div>
                   <div className={"col-4"}>
@@ -92,7 +95,7 @@ class FormModal extends Component {
                     <Select
                       name={"fieldSource"}
                       options={this.fillOptions()}
-                      value={this.state.sourceField}
+                      value={sourceField}
                       onChange={({target: {value}}) =>
                         this.onChange(value)
                       }
@@ -101,7 +104,7 @@ class FormModal extends Component {
                 </div>
                 <Row className={""}>
                   <Button
-                    style={{marginBottom: 12}}
+                    style={{marginBottom:12}}
                     label={"Add Field"}
                     onClick={this.onSave}
                     disabled={sourceField == "" || fieldName == ""}
@@ -116,19 +119,21 @@ class FormModal extends Component {
   }
 
   onOpen = () => {
-    console.log("createModal opened!");
-    this.setState({fieldName: "", sourceField: "", sourceComp: ""})
+    const fieldToEdit = this.props.fieldToEdit
+    console.log(fieldToEdit)
+    this.setState({...fieldToEdit, prevFieldName:fieldToEdit.fieldName}, () => {
+      console.log("initial state: ",this.state)
+    })
   }
-
 }
 
-
-FormModal.propTypes = {
-  onFormSave: PropTypes.func,
-  onClose: PropTypes.func,
-  onToggle: PropTypes.func,
-  isOpen: PropTypes.bool,
-  targetModel: PropTypes.object
+FormModalEdit.propTypes = {
+  onFormSave: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onToggle: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  targetModel: PropTypes.object.isRequired,
+  fieldToEdit:PropTypes.object.isRequired,
 };
 
-export default FormModal
+export default FormModalEdit

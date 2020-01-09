@@ -13,6 +13,7 @@ import {
   Calendar as DateIcon,
   RichText as XmlIcon
 } from "@buffetjs/icons";
+import {get} from "lodash";
 
 class MappingTable extends Component {
 
@@ -20,14 +21,13 @@ class MappingTable extends Component {
 
   CustomRow = ({row}) => {
 
-    // const { fieldName, count, format, minLength, maxLength, meanLength } = row;
-    const format = "string"
-    const fieldName = "test"
+    const {fieldName, sourceComp, sourceField, format} = row;
+    const id = fieldName;
     return (
       <tr style={{paddingTop: 18}}>
         <td>{fieldName}</td>
         <td>
-          {/*<p>{count}</p>*/}
+          <p>{sourceComp}</p>
         </td>
         <td>
           {format === "string" && <TextIcon fill="#fdd835"/>}
@@ -37,31 +37,41 @@ class MappingTable extends Component {
           {format === "email" && <EmailIcon fill="#fdd835"/>}
           {format === "date" && <DateIcon fill="#fdd835"/>}
           {format === "xml" && <XmlIcon fill="#fdd835"/>}
-          <p>{format}</p>
+          <p style={{fontWeight: "bold"}}>{format}</p>
         </td>
         <td>
-          {/*<span>{minLength}</span>*/}
+          <p>{sourceField}</p>
         </td>
+        {/*<td>*/}
+        {/*<span>{minLength}</span>*/}
+        {/*</td>*/}
+        {/*<td>*/}
+        {/*<p>{maxLength}</p>*/}
+        {/*</td>*/}
+        {/*<td>*/}
+        {/*<p>{meanLength}</p>*/}
+        {/*</td>*/}
+        {/*<td>*/}
+        {/*<MappingOptions*/}
+        {/*  targetModel={this.props.targetModel}*/}
+        {/*  stat={row}*/}
+        {/*  onChange={this.changeMappingOptions(row)}*/}
+        {/*/>*/}
+        {/*</td>*/}
         <td>
-          {/*<p>{maxLength}</p>*/}
-        </td>
-        <td>
-          {/*<p>{meanLength}</p>*/}
-        </td>
-        <td>
-          {/*<MappingOptions*/}
-          {/*  targetModel={this.props.targetModel}*/}
-          {/*  stat={row}*/}
-          {/*  onChange={this.changeMappingOptions(row)}*/}
-          {/*/>*/}
-        </td>
-        <td>
-          {/*{this.props.targetModel && (*/}
-          {/*  <TargetFieldSelect*/}
-          {/*    targetModel={this.props.targetModel}*/}
-          {/*    onChange={targetField => this.setMapping(fieldName, targetField)}*/}
-          {/*  />*/}
-          {/*)}*/}
+          <div className={"row"}>
+            <div
+              style={{
+                marginRight: 18,
+                marginLeft: 18
+              }}
+              onClick={() => this.props.showEdit(fieldName)}>
+              <i className={"fa fa-pen"} role={"button"}/>
+            </div>
+            <div onClick={() => this.props.showDelete(fieldName)}>
+              <i className={"fa fa-trash"} role={"button"}/>
+            </div>
+          </div>
         </td>
       </tr>
     );
@@ -89,34 +99,44 @@ class MappingTable extends Component {
     const props = {
       title: "Field Mapping",
       subtitle:
-        "Configure the Relationship between CSV Fields and Content type Fields"
+        "Configure the Relationship between Export output Fields and Content type Fields"
     };
     const headers = [
       {name: "Field", value: "fieldName"},
-      {name: "Count", value: "count"},
-      {name: "Format", value: "format"},
-      {name: "Min Length", value: "minLength"},
-      {name: "Max Length", value: "maxLength"},
-      {name: "Mean Length", value: "meanLength"},
-      {name: "Options", value: "options"},
-      {name: "Destination", value: "destination"}
+      {name: "Source Component", value: "sourceComp"},
+      {name: "Field Type", value: "fieldType"},
+      {name: "Source Field", value: "sourceField"},
+      {name: "Actions", value: "actions"},
+      // {name: "Max Length", value: "maxLength"},
+      // {name: "Mean Length", value: "meanLength"},
+      // {name: "Options1", value: "options"},
+      // {name: "Options2", value: "options"},
+      // {name: "Destination", value: "destination"}
     ];
+    const rows = []
+    const {mapping} = this.props
+    Object.keys(mapping).map(fieldName => {
+      const {sourceField, sourceComp, format} = get(mapping, [fieldName], {})
+      rows.push({fieldName, sourceComp, sourceField, format})
+    });
     // const items = [...analysis.fieldStats];
     return (
       <Table
         {...props}
-        // headers={headers}
-        rows={this.props.mapping}
+        headers={headers}
+        rows={rows}
         customRow={this.CustomRow}
       />
     );
   }
+
 }
 
 MappingTable.propTypes = {
-  mapping: PropTypes.array,
+  mapping: PropTypes.object,
   // targetModel: PropTypes.object,
-  // onChange: PropTypes.func
+  showDelete: PropTypes.func.isRequired,
+  showEdit: PropTypes.func.isRequired,
 };
 
 export default MappingTable;

@@ -1,11 +1,12 @@
 import React, {Component} from "react"
-import {PluginHeader, HeaderNav, LoadingIndicator, request} from 'strapi-helper-plugin'
+import {PluginHeader, HeaderNav, LoadingIndicator, request, PopUpWarning} from 'strapi-helper-plugin'
 import Block from '../../components/Block'
 import Row from "../../components/Row";
 import ExportMapping from "../../components/ExportMappingTable";
 import pluginId from "../../pluginId";
 import FormModal from "../../components/FormModal";
-import {get, has} from 'lodash'
+import FormModalEdit from "../../components/FormModalEdit";
+import {get, has, pick, keys, omit} from 'lodash'
 import {Select, Button, Label} from "@buffetjs/core";
 
 const getUrl = to =>
@@ -19,16 +20,29 @@ class ExportPage extends Component {
   * state -> files? fileSlug -> componentSourceField
   * */
   state = {
-    exportConfigs: {}, // cache the previous export configs in case we want them again
-    exportConfig: {},
-    /**/
-    mapping: {},
-    mappingTable: [],
-    formModalOpen: false,
-    selectedTarget: "",
+    // exportConfigs: {}, // cache the previous export configs in case we want them again
+    // exportConfig: {},
     loading: true,
+    showCreateModal: false,
+    createModalError: "",
+    showEditModal: false,
+    fieldToEdit: {},
+    showDeleteModal: false,
+    fieldToDelete: {},
+    selectedTarget: "",
     models: [],
     modelOptions: [],
+    mapping: {},
+    formEditModalError: "",
+  };
+
+
+  deleteField = (fieldName) => {
+    let {mapping} = this.state;
+    mapping = omit(mapping, [fieldName]);
+    this.setState({showDeleteModal: false, mapping},() => {
+      strapi.notification.success("Deleted")
+    })
   };
 
   getModels = async () => {
@@ -59,31 +73,49 @@ class ExportPage extends Component {
   };
 
   onFormSave = (val) => {
-    const {fieldName, sourceField, sourceComp} = val;
-    const {mapping} = this.state;
+    this.setState({showCreateModal: false}, () => {
+      const {fieldName, sourceField, sourceComp} = val;
+      const {mapping} = this.state;
 
-    if (sourceComp == null) {
       if (!has(mapping, fieldName)) {
-        mapping[fieldName] = sourceField
+        /*TODO calculate format*/
+        mapping[fieldName] = {sourceField, sourceComp, format: "string"};
         this.setState({mapping}, () => {
-          console.log(this.state.mapping)
-        })
+          console.log("extended state: ", this.state.mapping)
+        });
+        this.setState({showCreateModal: false})
       } else {
-        this.setState({formModalError: "Field name already Exists!"})
+        this.setState({createModalError: "Field name already Exists!"})
       }
-    }
+    });
+  };
 
-    this.setState({formModalOpen: false})
+  onFormEdit = async (val) => {
+    const {fieldName, sourceField, sourceComp, prevFieldName} = val;
+    let {mapping} = this.state;
+
+    if (!has(mapping, fieldName)) {
+      /*TODO calculate format*/
+      console.log("prevFieldName: ", prevFieldName);
+      mapping = omit(mapping, [prevFieldName]);
+      mapping[fieldName] = {sourceField, sourceComp, format: "string"};
+    } else {
+      mapping[fieldName] = {sourceField, sourceComp, format: "string"}
+    }
+    this.setState({showEditModal: false, mapping}, () => {
+      console.log("modified state: ", this.state.mapping)
+      strapi.notification.success("Edited")
+    });
   };
 
   componentDidMount = async () => {
     const res = await this.getModels();
     const {models, modelOptions} = res;
-    this.setState({models, modelOptions, selectedTarget: modelOptions && modelOptions[0].value });
+    this.setState({models, modelOptions, selectedTarget: modelOptions && modelOptions[0].value});
   };
 
   render() {
-    const {formModalOpen, targetModel, selectedTarget, modelOptions} = this.state;
+    const {showCreateModal, showEditModal, targetModel, selectedTarget, modelOptions, fieldToEdit} = this.state;
     return (
       <div className={"container-fluid"} style={{padding: "18px 30px"}}>
         <PluginHeader
@@ -124,22 +156,49 @@ class ExportPage extends Component {
               />
             </Row>
             <Row className={""}>
-              <Button onClick={() => this.openFormModal()}>Add new Field</Button>
+              <Button onClick={() => this.showCreateModal()}>Add new Field</Button>
             </Row>
-            {this.state.loading && <LoadingIndicator/>}{" "}
-            {!this.state.loading && this.state.exportConfigs && (
+            {this.state.loading && <LoadingIndicator/>}
+            {!this.state.loading && (
               <Row className={""} style={{marginTop: 12}}>
                 <FormModal
-                  isOpen={formModalOpen}
+                  isOpen={showCreateModal}
                   onFormSave={this.onFormSave}
-                  onClose={this.closeFormModal}
-                  onToggle={this.toggleFormModal}
+                  onClose={() => this.setState({showCreateModal: false})}
+                  onToggle={() => this.setState(prevState => ({
+                    showCreateModal: !prevState.showCreateModal
+                  }))}
                   targetModel={this.getTargetModel()}
+                />
+                <PopUpWarning
+                  isOpen={this.state.showDeleteModal}
+                  toggleModal={() => this.setState({showDeleteModal: null})}
+                  content={{
+                    title: `Please confirm`,
+                    message: `Are you sure you want to Delete this entry?`
+                  }}
+                  popUpWarningType="danger"
+                  onConfirm={async () => {
+                    this.deleteField(this.state.fieldToDelete)
+                  }}
+                />
+                <FormModalEdit
+                  isOpen={showEditModal}
+                  onFormSave={this.onFormEdit}
+                  onClose={() => this.setState({showEditModal: false})}
+                  onToggle={() => this.setState(prevState => ({
+                    showEditModal: !prevState.showEditModal
+                  }))}
+                  targetModel={this.getTargetModel()}
+                  fieldToEdit={fieldToEdit}
                 />
                 <ExportMapping
                   // undoImport={this.undoImport}
                   // deleteImport={this.deleteImport}
-                  mapping={this.state.mappingTable}
+                  showDelete={this.showDelete}
+                  showEdit={this.showEdit}
+                  mapping={this.state.mapping}
+
                 />
               </Row>
             )}
@@ -150,19 +209,13 @@ class ExportPage extends Component {
   }
 
 
-  openFormModal = () => {
-    this.setState({formModalOpen: true})
+  showCreateModal = () => {
+    console.log("showCreateModal")
+    this.setState({showCreateModal: true}, () => {
+      console.log(this.state.showCreateModal)
+    })
   };
 
-  closeFormModal = () => {
-    this.setState({formModalOpen: false})
-  };
-
-  toggleFormModal = () => {
-    this.setState(prevState => ({
-      formModalOpen: !prevState.formModalOpen
-    }))
-  };
 
   onSelectTarget = (selectedTarget) => {
     this.setState({selectedTarget})
@@ -172,6 +225,16 @@ class ExportPage extends Component {
     const {models} = this.state;
     if (!models) return null;
     return models.find(model => model.uid === this.state.selectedTarget);
+  };
+
+  showDelete = (id) => {
+    this.setState({showDeleteModal: true, fieldToDelete: id})
+  };
+
+  showEdit = (fieldName) => {
+    const {sourceField, sourceComp} = get(this.state.mapping, [fieldName], {});
+    const fieldToEdit = {fieldName, sourceField, sourceComp};
+    this.setState({showEditModal: true, fieldToEdit})
   };
 }
 
