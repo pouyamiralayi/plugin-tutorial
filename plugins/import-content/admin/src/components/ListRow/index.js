@@ -13,6 +13,7 @@ import Wrapper from './Wrapper';
 import {onClickDelete} from "../../../../../../.cache/plugins/strapi-plugin-users-permissions/admin/src/containers/EditPage/actions";
 
 function ListRow({
+                   exportName,
                    configurable,
                    name,
                    nature,
@@ -74,6 +75,7 @@ function ListRow({
       }
 
       onClick(
+        exportName,
         // Tells where the attribute is located in the main modifiedData object : contentType, component or components
         editTarget,
         // main data type uid
@@ -101,7 +103,7 @@ function ListRow({
 
   return (
     <Wrapper
-      onClick={handleClick}
+      // onClick={handleClick}
       className={[
         target ? 'relation-row' : '',
         configurable ? 'clickable' : '',
@@ -195,7 +197,7 @@ ListRow.defaultProps = {
   target: null,
   targetUid: null,
   type: null,
-  targetModel: {}
+  targetModel: {},
 };
 
 ListRow.propTypes = {
@@ -215,7 +217,8 @@ ListRow.propTypes = {
   target: PropTypes.string,
   targetUid: PropTypes.string,
   type: PropTypes.string,
-  targetModel: PropTypes.object
+  targetModel: PropTypes.object,
+  exportName: PropTypes.string
 };
 
 export default memo(ListRow);

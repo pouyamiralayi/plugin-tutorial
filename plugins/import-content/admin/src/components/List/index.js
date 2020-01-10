@@ -85,10 +85,9 @@ function List({
           <tbody>
           {items.map(item => {
             console.log("item: ", item);
-            const comp = get(comps, [item.component], {})
+            const comp = get(comps, [item.component], {});
             const {type} = item;
             const CustomRow = customRowComponent;
-
             return (
               <React.Fragment key={item.name}>
                 <CustomRow
@@ -104,7 +103,7 @@ function List({
                   secondLoopComponentUid={secondLoopComponentUid}
                 />
 
-                {type === 'component' && !isEmpty(comp) && (
+                {type === 'component' && !isEmpty(comp) && !isEmpty(comps) && (
                   <ComponentList
                     {...item}
                     comp={comp}
@@ -119,7 +118,7 @@ function List({
                   />
                 )}
 
-                {type === 'dynamiczone' && !isEmpty(comps) &&(
+                {type === 'dynamiczone' && !isEmpty(comps) && (
                   <DynamicZoneList
                     {...item}
                     comps={comps}
@@ -141,9 +140,9 @@ function List({
       </Wrapper>
       {isSub && (
         <div className="plus-icon" onClick={onClickAddField}>
-          {isInDevelopmentMode && (
-            <Plus fill={isFromDynamicZone ? '#007EFF' : '#b4b6ba'}/>
-          )}
+          {/*{isInDevelopmentMode && (*/}
+          {/*  <Plus fill={isFromDynamicZone ? '#007EFF' : '#b4b6ba'}/>*/}
+          {/*)}*/}
         </div>
       )}
     </>

@@ -33,6 +33,7 @@ function DynamicZoneList({
   const toggle = tab => {
     if (activeTab !== tab) {
       activeTab = tab
+      console.log("activeTab: ",activeTab)
       // setActiveTab(tab)
     }
   };
@@ -85,6 +86,7 @@ function DynamicZoneList({
                 comp: get(comps, [component], {}),
                 comps
               };
+              console.log("props: ", props);
 
               return (
                 <TabPane tabId={`${index}`} key={component}>

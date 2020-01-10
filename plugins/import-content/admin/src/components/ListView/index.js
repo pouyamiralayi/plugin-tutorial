@@ -31,6 +31,41 @@ import Wrapper from './Wrapper';
 * */
 const ListView = ({comps, targetModel}) => {
 
+  const [attributes, updateAttributes] = useState({});
+  const [attributesArray, updateAttributesArray] = useState([]);
+  const [attributesLength, updateAttributesLength] = useState(0);
+
+  const [targetUid, updateTargetUid] = useState("");
+
+  const [currentDataName, updateCurrentDataName] = useState("");
+
+  useEffect(() => {
+    const attributes = get(targetModel, ['schema', 'attributes'], {});
+    updateAttributes(attributes);
+  }, [targetModel]);
+
+  useEffect(() => {
+    const attributesArray = convertAttrObjToArray(attributes);
+    updateAttributesArray(attributesArray);
+    const attributesLength = Object.keys(attributes).length;
+    updateAttributesLength(attributesLength)
+  }, [attributes]);
+
+  useEffect(() => {
+    const targetUid = get(targetModel, ['uid'], "");
+    updateTargetUid(targetUid);
+  }, [targetModel]);
+
+  useEffect(() => {
+    const currentDataName = get(
+      targetModel,
+      ['schema', 'name'],
+      ''
+    );
+    updateCurrentDataName(currentDataName);
+  }, [targetModel]);
+
+
   // const [components, updateComponents] = useState({});
 
   // async function getComponents() {
@@ -40,7 +75,7 @@ const ListView = ({comps, targetModel}) => {
   //     .map(obj => {
   //       obj.uid ? comps[obj.uid] = obj : null
   //     });
-    console.log("comps: (list1)", comps);
+  console.log("comps: (list1)", comps);
   //   updateComponents(comps)
   // }
 
@@ -65,7 +100,7 @@ const ListView = ({comps, targetModel}) => {
     submitData: null,
     toggleModalCancel: null
   };
-  let compo
+  let compo;
   const {emitEvent, formatMessage} = useGlobalContext();
   // const {push, goBack} = useHistory();
   // const {search} = useLocation();
@@ -86,25 +121,10 @@ const ListView = ({comps, targetModel}) => {
 
   // const firstMainDataPath = isInContentTypeView ? 'contentType' : 'component';
   const firstMainDataPath = 'contentType';
-  const mainDataTypeAttributesPath = [
-    // "contentType",
-    'schema',
-    'attributes',
-  ];
+
 
   // const targetUid = get(modifiedData, [firstMainDataPath, 'uid'], "");
-  const targetUid = get(targetModel, ['uid'], "");
 
-  /*TODO must fill it using fillOptions or something like that or receive the targetModel and make it shile!!*/
-  // const attributes = get(modifiedData, mainDataTypeAttributesPath, {});
-  const attributes = get(targetModel, mainDataTypeAttributesPath, {});
-  const attributesLength = Object.keys(attributes).length;
-  const currentDataName = get(
-    targetModel,
-    // [firstMainDataPath, 'schema', 'name'],
-    ['schema', 'name'],
-    ''
-  );
   const isFromPlugin = has(initialData, [firstMainDataPath, 'plugin']);
   const hasModelBeenModified = !isEqual(modifiedData, initialData);
   // const forTarget = isInContentTypeView ? 'contentType' : 'component';
@@ -152,8 +172,13 @@ const ListView = ({comps, targetModel}) => {
     // push({search: makeSearch(search, true)});
   };
 
-  /*TODO edit happens here*/
+  /*TODO pick(attributes, [attrName])
+  *  .filter(obj => obj.target != target)
+  *  set(attributes, [attrName, target], `{edited obj}`
+  *
+  * */
   const handleClickEditField = async (
+    exportName,
     forTarget,
     targetUid,
     attributeName,
@@ -182,6 +207,12 @@ const ListView = ({comps, targetModel}) => {
       default:
         attributeType = type;
     }
+
+    console.log({
+      exportName, attributeType, forTarget, targetUid,
+      attributeName, subTargetUid, headerDisplayName,
+      headerDisplayCategory, headerDisplaySubCategory
+    });
 
     await wait();
 
@@ -323,6 +354,10 @@ const ListView = ({comps, targetModel}) => {
     : [configureButtonProps];
 
   const handleClickOnTrashIcon = () => {
+    /*TODO pick(attributes, [attrName])
+    *      .filter(obj => obj.target != target)
+    *       omit(attributes, [attrName])
+    * */
   };
 
   const CustomRow = props => {
@@ -374,7 +409,7 @@ const ListView = ({comps, targetModel}) => {
                 {isEmpty(comps) ? (<LoadingIndicator/>) :
                   (
                     <List
-                      items={convertAttrObjToArray(attributes)}
+                      items={attributesArray}
                       comps={comps}
                       customRowComponent={props => <CustomRow {...props} />}
                       addComponentToDZ={handleClickAddComponentToDZ}
