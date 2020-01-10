@@ -13,14 +13,19 @@ import Block from "../Block";
 
 class FormModalEdit extends Component {
   state = {
-    prevFieldName:"",
+    prevFieldName: "",
     fieldName: "",
     sourceField: "",
-    sourceComp: ""
+    sourceComp: "",
+    selectedTarget: ""
+  };
+
+  onSelectTarget = (selectedTarget) => {
+    this.setState({selectedTarget})
   };
 
   fillOptions = () => {
-    const targetModel = this.props.targetModel;
+    const targetModel = this.props.getTargetModel(this.state.selectedTarget);
     const schemaAttributes = get(targetModel, ["schema", "attributes"], {});
     const options = Object.keys(schemaAttributes)
       .map(fieldName => {
@@ -37,28 +42,26 @@ class FormModalEdit extends Component {
   };
 
   onChange = (val) => {
-    if(val == "none"){
+    if (val == "none") {
       this.setState({sourceField: ""})
-    }
-    else {
+    } else {
       this.setState({sourceField: val})
     }
   };
 
   onSave = () => {
-    const {fieldName, sourceField, sourceComp, prevFieldName} = this.state;
-    this.props.onFormSave({fieldName, sourceField, sourceComp, prevFieldName})
+    const {fieldName, sourceField, sourceComp, prevFieldName, selectedTarget} = this.state;
+    this.props.onFormSave({fieldName, sourceField, sourceComp, prevFieldName, selectedTarget})
   };
 
   render() {
-    // const {sourceField, fieldName} = this.state
-    const {fieldName, sourceComp, sourceField} = this.state;
+    const {sourceField, fieldName, sourceComp} = this.state;
     return (
       <Modal
-        onOpened={this.onOpen}
         isOpen={this.props.isOpen}
         onClosed={this.props.onClose}
         onToggle={this.props.onToggle}
+        onOpened={this.onOpen}
       >
         {/*<HeaderModal>*/}
         {/*  <ModalHeader*/}
@@ -82,14 +85,14 @@ class FormModalEdit extends Component {
                   <Select
                     name={"targetContentType"}
                     options={this.props.modelOptions}
-                    value={this.props.selectedTarget}
+                    value={this.state.selectedTarget}
                     onChange={({target: {value}}) =>
-                      this.props.onSelectTarget(value)}
+                      this.onSelectTarget(value)}
                   />
                 </Row>
                 <div className={"row"}>
                   <div className={"col-4"}>
-                    <Label htmlFor="fieldSource">Field Name</Label>
+                    <Label htmlFor="fieldNames">Field Name</Label>
                     <InputText
                       name={"fieldName"}
                       onChange={({target: {value}}) => {
@@ -104,7 +107,7 @@ class FormModalEdit extends Component {
                     <Label htmlFor="fieldSource">Source</Label>
                     <Select
                       name={"fieldSource"}
-                      options={this.props.modelOptions}
+                      options={this.props.fillOptions(this.state.selectedTarget)}
                       value={sourceField}
                       onChange={({target: {value}}) =>
                         this.onChange(value)
@@ -114,8 +117,8 @@ class FormModalEdit extends Component {
                 </div>
                 <Row className={""}>
                   <Button
-                    style={{marginBottom:12}}
-                    label={"Add Field"}
+                    style={{marginBottom: 12}}
+                    label={"Apply"}
                     onClick={this.onSave}
                     disabled={sourceField == "" || fieldName == ""}
                   />
@@ -129,24 +132,23 @@ class FormModalEdit extends Component {
   }
 
   onOpen = () => {
-    const fieldToEdit = this.props.fieldToEdit
-    console.log(fieldToEdit)
-    this.setState({...fieldToEdit, prevFieldName:fieldToEdit.fieldName}, () => {
-      console.log("initial state: ",this.state)
+    const fieldToEdit = this.props.fieldToEdit;
+    console.log(fieldToEdit);
+    const {fieldName, selectedTarget} = fieldToEdit;
+    this.setState({...fieldToEdit, prevFieldName: fieldName, selectedTarget}, () => {
+      console.log("initial state: ", this.state)
     })
   }
 }
 
 FormModalEdit.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
   onFormSave: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
-  isOpen: PropTypes.bool.isRequired,
-  fieldToEdit:PropTypes.object.isRequired,
-  selectedTarget:PropTypes.string.isRequired,
-  onSelectTarget:PropTypes.func.isRequired,
-  modelOptions:PropTypes.array.isRequired,
-  targetModel:PropTypes.object.isRequired
+  fieldToEdit: PropTypes.object.isRequired,
+  modelOptions: PropTypes.array.isRequired,
+  fillOptions: PropTypes.func.isRequired
 };
 
 export default FormModalEdit

@@ -74,14 +74,14 @@ class ExportPage extends Component {
 
   onFormSave = (val) => {
     this.setState({showCreateModal: false}, () => {
-      const {fieldName, sourceField, sourceComp} = val;
+      const {fieldName, sourceField, sourceComp, selectedTarget} = val;
       const {mapping} = this.state;
 
       if (!has(mapping, fieldName)) {
         /*TODO calculate format*/
-        mapping[fieldName] = {sourceField, sourceComp, format: "string"};
+        mapping[fieldName] = {sourceField, sourceComp, selectedTarget, format: "string"};
         this.setState({showCreateModal: false, mapping}, () => {
-          console.log("extended state: ", this.state.mapping)
+          console.log("extended state: ", this.state.mapping);
           strapi.notification.success("Created")
         });
       } else {
@@ -91,22 +91,23 @@ class ExportPage extends Component {
   };
 
   onFormEdit = async (val) => {
-    const {fieldName, sourceField, sourceComp, prevFieldName} = val;
+    const {fieldName, sourceField, sourceComp, prevFieldName, selectedTarget} = val;
     let {mapping} = this.state;
 
     if (!has(mapping, fieldName)) {
       /*TODO calculate format*/
       console.log("prevFieldName: ", prevFieldName);
       mapping = omit(mapping, [prevFieldName]);
-      mapping[fieldName] = {sourceField, sourceComp, format: "string"};
+      mapping[fieldName] = {sourceField, sourceComp, format: "string", selectedTarget};
     } else {
-      mapping[fieldName] = {sourceField, sourceComp, format: "string"}
+      mapping[fieldName] = {sourceField, sourceComp, format: "string", selectedTarget}
     }
     this.setState({showEditModal: false, mapping}, () => {
       console.log("modified state: ", this.state.mapping)
       strapi.notification.success("Edited")
     });
   };
+
 
 
   componentDidMount = async () => {
@@ -173,9 +174,7 @@ class ExportPage extends Component {
                     showCreateModal: !prevState.showCreateModal
                   }))}
                   modelOptions={modelOptions}
-                  onSelectTarget={this.onSelectTarget}
-                  selectedTarget={this.state.selectedTarget}
-                  targetModel={this.getTargetModel()}
+                  fillOptions={this.fillOptions}
                 />
                 <PopUpWarning
                   isOpen={this.state.showDeleteModal}
@@ -196,11 +195,9 @@ class ExportPage extends Component {
                   onToggle={() => this.setState(prevState => ({
                     showEditModal: !prevState.showEditModal
                   }))}
-                  modelOptions={this.state.modelOptions}
-                  targetModel={this.getTargetModel()}
                   fieldToEdit={fieldToEdit}
-                  selectedTarget={selectedTarget}
-                  onSelectTarget={this.onSelectTarget}
+                  modelOptions={this.state.modelOptions}
+                  fillOptions={this.fillOptions}
                 />
                 <ExportMapping
                   // undoImport={this.undoImport}
@@ -229,10 +226,23 @@ class ExportPage extends Component {
   };
 
 
-  getTargetModel = () => {
+  fillOptions = (selectedTarget) => {
+    const targetModel = this.getTargetModel(selectedTarget);
+    const schemaAttributes = get(targetModel, ["schema", "attributes"], {});
+    const options = Object.keys(schemaAttributes)
+      .map(fieldName => {
+        const attribute = get(schemaAttributes, [fieldName], {});
+
+        return attribute.type && {label: fieldName, value: fieldName};
+      })
+      .filter(obj => obj !== undefined);
+    return [{label: "None", value: "none"}, ...options];
+  };
+
+  getTargetModel = (selectedTarget) => {
     const {models} = this.state;
     if (!models) return null;
-    return models.find(model => model.uid === this.state.selectedTarget);
+    return models.find(model => model.uid === selectedTarget);
   };
 
   showDelete = (id) => {
@@ -240,8 +250,8 @@ class ExportPage extends Component {
   };
 
   showEdit = (fieldName) => {
-    const {sourceField, sourceComp} = get(this.state.mapping, [fieldName], {});
-    const fieldToEdit = {fieldName, sourceField, sourceComp};
+    const {sourceField, sourceComp, selectedTarget} = get(this.state.mapping, [fieldName], {});
+    const fieldToEdit = {fieldName, sourceField, sourceComp, selectedTarget};
     this.setState({showEditModal: true, fieldToEdit})
   };
 }

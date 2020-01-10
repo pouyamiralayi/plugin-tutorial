@@ -20,6 +20,11 @@ class FormModal extends Component {
     selectedTarget: ""
   };
 
+  onSelectTarget = (selectedTarget) => {
+    this.setState({selectedTarget})
+  };
+
+
 
   setValue = (val) => {
     this.setState({fieldName: val})
@@ -34,23 +39,11 @@ class FormModal extends Component {
   };
 
   onSave = () => {
-    const {fieldName, sourceField, sourceComp} = this.state
-    this.props.onFormSave({fieldName, sourceField, sourceComp})
+    const {fieldName, sourceField, sourceComp, selectedTarget} = this.state;
+    this.props.onFormSave({fieldName, sourceField, sourceComp, selectedTarget})
   };
 
 
-  fillOptions = () => {
-    const targetModel = this.props.targetModel;
-    const schemaAttributes = get(targetModel, ["schema", "attributes"], {});
-    const options = Object.keys(schemaAttributes)
-      .map(fieldName => {
-        const attribute = get(schemaAttributes, [fieldName], {});
-
-        return attribute.type && {label: fieldName, value: fieldName};
-      })
-      .filter(obj => obj !== undefined);
-    return [{label: "None", value: "none"}, ...options];
-  };
 
   render() {
     const {sourceField, fieldName, selectedTarget} = this.state
@@ -83,9 +76,9 @@ class FormModal extends Component {
                   <Select
                     name={"targetContentType"}
                     options={this.props.modelOptions}
-                    value={this.props.selectedTarget}
+                    value={this.state.selectedTarget}
                     onChange={({target: {value}}) =>
-                      this.props.onSelectTarget(value)}
+                      this.onSelectTarget(value)}
                   />
                 </Row>
                 <Row className={"row"}>
@@ -98,14 +91,14 @@ class FormModal extends Component {
                       }}
                       placeholder="Field Name"
                       type="text"
-                      value={this.state.fieldName}
+                      value={fieldName}
                     />
                   </div>
                   <div className={"col-4"}>
                     <Label htmlFor="fieldSource">Source</Label>
                     <Select
                       name={"fieldSource"}
-                      options={this.fillOptions}
+                      options={this.props.fillOptions(this.state.selectedTarget)}
                       value={this.state.sourceField}
                       onChange={({target: {value}}) =>
                         this.onChange(value)
@@ -143,14 +136,12 @@ class FormModal extends Component {
 
 
 FormModal.propTypes = {
+  isOpen: PropTypes.bool,
   onFormSave: PropTypes.func,
   onClose: PropTypes.func,
   onToggle: PropTypes.func,
-  isOpen: PropTypes.bool,
-  selectedTarget:PropTypes.string.isRequired,
-  targetModel: PropTypes.object,
   modelOptions: PropTypes.array.isRequired,
-  onSelectTarget: PropTypes.func.isRequired,
+  fillOptions: PropTypes.func.isRequired
 };
 
 export default FormModal
