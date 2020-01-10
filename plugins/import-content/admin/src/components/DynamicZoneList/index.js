@@ -15,6 +15,7 @@ import ComponentList from '../ComponentList';
 import ComponentButton from './ComponentButton';
 import ComponentCard from '../ComponentCard';
 import Td from '../Td';
+import {get} from "lodash";
 
 function DynamicZoneList({
                            customRowComponent,
@@ -23,7 +24,7 @@ function DynamicZoneList({
                            mainTypeName,
                            name,
                            targetUid,
-                           comp
+                           comps
                          }) {
   // const { isInDevelopmentMode } = useDataManager();
   const isInDevelopmentMode = true;
@@ -64,8 +65,7 @@ function DynamicZoneList({
                     <ComponentCard
                       dzName={name}
                       index={index}
-                      component={component}
-                      comp={comp}
+                      component={get(comps, [component], {})}
                       isActive={activeTab === `${index}`}
                       isInDevelopmentMode={isInDevelopmentMode}
                       onClick={() => {
@@ -82,6 +82,8 @@ function DynamicZoneList({
               const props = {
                 customRowComponent: customRowComponent,
                 component: component,
+                comp: get(comps, [component], {}),
+                comps
               };
 
               return (
@@ -113,7 +115,7 @@ DynamicZoneList.defaultProps = {
   components: [],
   customRowComponent: null,
   name: null,
-  comp: {}
+  comps: {}
 };
 
 DynamicZoneList.propTypes = {
@@ -123,7 +125,7 @@ DynamicZoneList.propTypes = {
   mainTypeName: PropTypes.string.isRequired,
   name: PropTypes.string,
   targetUid: PropTypes.string.isRequired,
-  comp: PropTypes.object
+  comps: PropTypes.object
 };
 
 export default DynamicZoneList;

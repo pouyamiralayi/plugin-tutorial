@@ -20,12 +20,11 @@ function ComponentCard({
                          isActive,
                          isInDevelopmentMode,
                          onClick,
-                         comp
                        }) {
   // const {modifiedData, removeComponentFromDynamicZone} = useDataManager();
   const {
     schema: {icon, name},
-  } = comp;
+  } = component;
   // } = get(comp, ['components', component], {
   //   schema: {icon: null},
   // });
@@ -50,7 +49,7 @@ function ComponentCard({
 }
 
 ComponentCard.defaultProps = {
-  component: null,
+  component: {},
   isActive: false,
   isInDevelopmentMode: false,
   onClick: () => {
@@ -59,13 +58,12 @@ ComponentCard.defaultProps = {
 };
 
 ComponentCard.propTypes = {
-  component: PropTypes.string,
+  component: PropTypes.object,
   dzName: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   isActive: PropTypes.bool,
   isInDevelopmentMode: PropTypes.bool,
   onClick: PropTypes.func,
-  comp: PropTypes.object
 };
 
 export default ComponentCard;

@@ -112,7 +112,6 @@ function List({
                     customRowComponent={customRowComponent}
                     targetUid={targetUid}
                     // NEW PROPS
-
                     mainTypeName={mainTypeName}
                     editTarget={editTarget}
                     firstLoopComponentName={firstLoopComponentName}
@@ -120,16 +119,16 @@ function List({
                   />
                 )}
 
-                {/*{type === 'dynamiczone' && (*/}
-                {/*  <DynamicZoneList*/}
-                {/*    {...item}*/}
-                {/*    comp={item.component ? get(comps, [item.component]) : {}}*/}
-                {/*    customRowComponent={customRowComponent}*/}
-                {/*    addComponent={addComponentToDZ}*/}
-                {/*    targetUid={targetUid}*/}
-                {/*    mainTypeName={mainTypeName}*/}
-                {/*  />*/}
-                {/*)}*/}
+                {type === 'dynamiczone' && !isEmpty(comps) &&(
+                  <DynamicZoneList
+                    {...item}
+                    comps={comps}
+                    customRowComponent={customRowComponent}
+                    addComponent={addComponentToDZ}
+                    targetUid={targetUid}
+                    mainTypeName={mainTypeName}
+                  />
+                )}
               </React.Fragment>
             );
           })}
