@@ -160,7 +160,9 @@ class ExportPage extends Component {
           style={{marginTop: "4.4rem"}}
         />
         {this.state.loading && (
-          <LoadingIndicator/>
+          <Block>
+            <LoadingIndicator/>
+          </Block>
         )}
         {!this.state.loading && !isEmpty(components) && modelOptions && (
           <div className={"row"}>
