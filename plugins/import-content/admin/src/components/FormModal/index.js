@@ -10,7 +10,7 @@ import {Select, InputText, Button, Label} from '@buffetjs/core'
 import {get} from "lodash"
 import Row from '../Row'
 import Block from "../Block";
-
+import ListView from "../ListView"
 class FormModal extends Component {
 
   state = {
@@ -114,6 +114,11 @@ class FormModal extends Component {
                     disabled={sourceField == "" || fieldName == ""}
                   />
                 </Row>
+                {/*<Row>*/}
+                {/*  <ListView*/}
+                {/*    targetModel={this.props.getTargetModel(this.state.selectedTarget)}*/}
+                {/*  />*/}
+                {/*</Row>*/}
               </div>
             </ModalBody>
           </ModalForm>
@@ -141,7 +146,8 @@ FormModal.propTypes = {
   onClose: PropTypes.func,
   onToggle: PropTypes.func,
   modelOptions: PropTypes.array.isRequired,
-  fillOptions: PropTypes.func.isRequired
+  fillOptions: PropTypes.func.isRequired,
+  getTargetModel:PropTypes.func.isRequired
 };
 
 export default FormModal

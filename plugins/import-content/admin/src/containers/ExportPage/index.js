@@ -6,8 +6,10 @@ import ExportMapping from "../../components/ExportMappingTable";
 import pluginId from "../../pluginId";
 import FormModal from "../../components/FormModal";
 import FormModalEdit from "../../components/FormModalEdit";
-import {get, has, pick, keys, omit} from 'lodash'
+import {get, has, pick, keys, omit, isEmpty} from 'lodash'
 import {Select, Button, Label} from "@buffetjs/core";
+import ListView from "../../components/ListView";
+import {mode} from "simple-statistics";
 
 const getUrl = to =>
   to ? `/plugins/${pluginId}/${to}` : `/plugins/${pluginId}`;
@@ -34,8 +36,19 @@ class ExportPage extends Component {
     modelOptions: [],
     mapping: {},
     formEditModalError: "",
+    components: {},
   };
 
+  getComponents = async () => {
+    const resp = await request("/content-type-builder/components", {method: "GET"});
+    const components = {};
+    get(resp, ["data"], [])
+      .map(obj => {
+        obj.uid ? components[obj.uid] = obj : null
+      });
+    // console.log("comps: ", components);
+    return components
+  };
 
   deleteField = (fieldName) => {
     let {mapping} = this.state;
@@ -95,7 +108,6 @@ class ExportPage extends Component {
     let {mapping} = this.state;
 
     if (!has(mapping, fieldName)) {
-      /*TODO calculate format*/
       console.log("prevFieldName: ", prevFieldName);
       mapping = omit(mapping, [prevFieldName]);
       mapping[fieldName] = {sourceField, sourceComp, format: "string", selectedTarget};
@@ -109,11 +121,14 @@ class ExportPage extends Component {
   };
 
 
-
   componentDidMount = async () => {
+    const components = await this.getComponents()
     const res = await this.getModels();
     const {models, modelOptions} = res;
-    this.setState({models, modelOptions, selectedTarget: modelOptions && modelOptions[0].value});
+    this.setState({components, models, modelOptions, selectedTarget: modelOptions && modelOptions[0].value}, () => {
+      // console.log("modelOptions: ", this.state.modelOptions[0])
+      console.log("comps: ",this.state.components)
+    });
   };
 
   render() {
@@ -175,6 +190,7 @@ class ExportPage extends Component {
                   }))}
                   modelOptions={modelOptions}
                   fillOptions={this.fillOptions}
+                  getTargetModel={this.getTargetModel}
                 />
                 <PopUpWarning
                   isOpen={this.state.showDeleteModal}
@@ -199,6 +215,15 @@ class ExportPage extends Component {
                   modelOptions={this.state.modelOptions}
                   fillOptions={this.fillOptions}
                 />
+                {this.state.loading && (
+                  <LoadingIndicator/>
+                )}
+                {!this.state.loading && !isEmpty(this.state.components) && (
+                  <ListView
+                    comps={this.state.components}
+                    targetModel={this.getTargetModel(this.state.selectedTarget)}
+                  />
+                )}
                 <ExportMapping
                   // undoImport={this.undoImport}
                   // deleteImport={this.deleteImport}
@@ -228,14 +253,15 @@ class ExportPage extends Component {
 
   fillOptions = (selectedTarget) => {
     const targetModel = this.getTargetModel(selectedTarget);
+    console.log(targetModel);
     const schemaAttributes = get(targetModel, ["schema", "attributes"], {});
     const options = Object.keys(schemaAttributes)
       .map(fieldName => {
         const attribute = get(schemaAttributes, [fieldName], {});
-
+        console.log(attribute);
         return attribute.type && {label: fieldName, value: fieldName};
       })
-      .filter(obj => obj !== undefined);
+      .filter(obj => obj !== undefined)
     return [{label: "None", value: "none"}, ...options];
   };
 
