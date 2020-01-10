@@ -16,7 +16,7 @@ import DynamicZoneList from '../DynamicZoneList';
 import ComponentList from '../ComponentList';
 // import { ListButton } from '../ListButton';
 import Wrapper from './List';
-import {get} from "lodash"
+import {get, isEmpty} from "lodash"
 
 function List({
                 className,
@@ -84,6 +84,8 @@ function List({
         <table>
           <tbody>
           {items.map(item => {
+            console.log("item: ", item);
+            const comp = get(comps, [item.component], {})
             const {type} = item;
             const CustomRow = customRowComponent;
 
@@ -102,20 +104,21 @@ function List({
                   secondLoopComponentUid={secondLoopComponentUid}
                 />
 
-                {/*{type === 'component' && (*/}
-                {/*  <ComponentList*/}
-                {/*    {...item}*/}
-                {/*    comp={item.component ? get(comps, [item.component]) : {}}*/}
-                {/*    customRowComponent={customRowComponent}*/}
-                {/*    targetUid={targetUid}*/}
-                {/*    // NEW PROPS*/}
+                {type === 'component' && !isEmpty(comp) && (
+                  <ComponentList
+                    {...item}
+                    comp={comp}
+                    comps={comps}
+                    customRowComponent={customRowComponent}
+                    targetUid={targetUid}
+                    // NEW PROPS
 
-                {/*    mainTypeName={mainTypeName}*/}
-                {/*    editTarget={editTarget}*/}
-                {/*    firstLoopComponentName={firstLoopComponentName}*/}
-                {/*    firstLoopComponentUid={firstLoopComponentUid}*/}
-                {/*  />*/}
-                {/*)}*/}
+                    mainTypeName={mainTypeName}
+                    editTarget={editTarget}
+                    firstLoopComponentName={firstLoopComponentName}
+                    firstLoopComponentUid={firstLoopComponentUid}
+                  />
+                )}
 
                 {/*{type === 'dynamiczone' && (*/}
                 {/*  <DynamicZoneList*/}

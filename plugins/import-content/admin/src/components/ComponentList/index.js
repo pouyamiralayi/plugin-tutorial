@@ -20,8 +20,10 @@ function ComponentList({
                          firstLoopComponentName,
                          firstLoopComponentUid,
                          comp,
+                         comps,
                        }) {
 
+  console.log("comp: ", comp);
   const {
     schema: {name: componentName, attributes},
     // } = get(modifiedData, ['components', component], {
@@ -35,6 +37,7 @@ function ComponentList({
     <tr className="component-row">
       <Td colSpan={12} isChildOfDynamicZone={isFromDynamicZone}>
         <List
+          comps={comps}
           customRowComponent={customRowComponent}
           items={convertAttrObjToArray(attributes)}
           targetUid={component}
@@ -58,7 +61,8 @@ ComponentList.defaultProps = {
   component: null,
   customRowComponent: null,
   isFromDynamicZone: false,
-  comp: {}
+  comp: {},
+  comps: {}
 };
 
 ComponentList.propTypes = {
@@ -69,7 +73,8 @@ ComponentList.propTypes = {
   isFromDynamicZone: PropTypes.bool,
   mainTypeName: PropTypes.string.isRequired,
   targetUid: PropTypes.string.isRequired,
-  comp: PropTypes.object
+  comp: PropTypes.object,
+  comps: PropTypes.object
 };
 
 export default ComponentList;
