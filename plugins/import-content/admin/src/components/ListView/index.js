@@ -362,8 +362,8 @@ const ListView = ({comps, targetModel}) => {
           <div className="row">
             {/*<LeftMenu wait={wait}/>*/}
             <div
-              className="col-md-9 content"
-              style={{paddingLeft: '30px', paddingRight: '30px'}}
+              className="row col-12"
+              // style={{paddingLeft: '30px', paddingRight: '30px'}}
             >
               {/*TODO fieldName && selectTarget*/}
               {/*<Header {...headerProps} />*/}

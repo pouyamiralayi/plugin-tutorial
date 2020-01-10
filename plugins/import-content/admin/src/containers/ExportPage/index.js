@@ -127,14 +127,14 @@ class ExportPage extends Component {
     const {models, modelOptions} = res;
     this.setState({components, models, modelOptions, selectedTarget: modelOptions && modelOptions[0].value}, () => {
       // console.log("modelOptions: ", this.state.modelOptions[0])
-      console.log("comps: ",this.state.components)
+      console.log("comps: ", this.state.components)
     });
   };
 
   render() {
     const {
       showCreateModal, showEditModal,
-      selectedTarget, modelOptions, fieldToEdit
+      selectedTarget, modelOptions, components, fieldToEdit
     } = this.state;
     return (
       <div className={"container-fluid"} style={{padding: "18px 30px"}}>
@@ -159,39 +159,38 @@ class ExportPage extends Component {
           ]}
           style={{marginTop: "4.4rem"}}
         />
-        <div className={"row"}>
-          <Block
-            title="General"
-            description="Export your Content-Types"
-            style={{marginBottom: 12}}
-          >
-            {/*<Row className={""}>*/}
-            {/*  <Label htmlFor={"targetContentType"}>Select Content Type</Label>*/}
-            {/*  <Select*/}
-            {/*    name={"targetContentType"}*/}
-            {/*    options={modelOptions}*/}
-            {/*    value={selectedTarget}*/}
-            {/*    onChange={({target: {value}}) =>*/}
-            {/*      this.onSelectTarget(value)}*/}
-            {/*  />*/}
-            {/*</Row>*/}
-            <Row className={""}>
-              <Button onClick={() => this.showCreateModal()}>Add new Field</Button>
-            </Row>
-            {this.state.loading && <LoadingIndicator/>}
-            {!this.state.loading && (
+        {this.state.loading && (
+          <LoadingIndicator/>
+        )}
+        {!this.state.loading && !isEmpty(components) && modelOptions && (
+          <div className={"row"}>
+            <Block
+              title="General"
+              description="Export your Content-Types"
+              style={{marginBottom: 12}}
+            >
+              {/*<Row className={""}>*/}
+              {/*  <Label htmlFor={"targetContentType"}>Select Content Type</Label>*/}
+              {/*  <Select*/}
+              {/*    name={"targetContentType"}*/}
+              {/*    options={modelOptions}*/}
+              {/*    value={selectedTarget}*/}
+              {/*    onChange={({target: {value}}) =>*/}
+              {/*      this.onSelectTarget(value)}*/}
+              {/*  />*/}
+              {/*</Row>*/}
               <Row className={""} style={{marginTop: 12}}>
-                <FormModal
-                  isOpen={showCreateModal}
-                  onFormSave={this.onFormSave}
-                  onClose={() => this.setState({showCreateModal: false})}
-                  onToggle={() => this.setState(prevState => ({
-                    showCreateModal: !prevState.showCreateModal
-                  }))}
-                  modelOptions={modelOptions}
-                  fillOptions={this.fillOptions}
-                  getTargetModel={this.getTargetModel}
-                />
+                {/*<FormModal*/}
+                {/*  isOpen={showCreateModal}*/}
+                {/*  onFormSave={this.onFormSave}*/}
+                {/*  onClose={() => this.setState({showCreateModal: false})}*/}
+                {/*  onToggle={() => this.setState(prevState => ({*/}
+                {/*    showCreateModal: !prevState.showCreateModal*/}
+                {/*  }))}*/}
+                {/*  modelOptions={modelOptions}*/}
+                {/*  fillOptions={this.fillOptions}*/}
+                {/*  getTargetModel={this.getTargetModel}*/}
+                {/*/>*/}
                 <PopUpWarning
                   isOpen={this.state.showDeleteModal}
                   toggleModal={() => this.setState({showDeleteModal: null})}
@@ -215,30 +214,42 @@ class ExportPage extends Component {
                   modelOptions={this.state.modelOptions}
                   fillOptions={this.fillOptions}
                 />
-                {this.state.loading && (
-                  <LoadingIndicator/>
-                )}
-                {!this.state.loading && !isEmpty(this.state.components) && (
-                  <ListView
-                    comps={this.state.components}
-                    targetModel={this.getTargetModel(this.state.selectedTarget)}
+                <Row className={"col-4 row"}>
+                  <Label htmlFor={"targetContentType"}>Select Content Type</Label>
+                  <Select
+                    name={"targetContentType"}
+                    options={this.state.modelOptions}
+                    value={this.state.selectedTarget}
+                    onChange={({target: {value}}) =>
+                      this.onSelectTarget(value)}
                   />
-                )}
-                <ExportMapping
-                  // undoImport={this.undoImport}
-                  // deleteImport={this.deleteImport}
-                  showDelete={this.showDelete}
-                  showEdit={this.showEdit}
-                  mapping={this.state.mapping}
-                />
+                </Row>
               </Row>
-            )}
-          </Block>
-        </div>
+              <Row className={""}>
+                <Button onClick={() => this.showCreateModal()}>Add new Field</Button>
+              </Row>
+              <ListView
+                comps={this.state.components}
+                targetModel={this.getTargetModel(selectedTarget)}
+              />
+              <Row>
+                {/*<ExportMapping*/}
+                {/*  // undoImport={this.undoImport}*/}
+                {/*  // deleteImport={this.deleteImport}*/}
+                {/*  showDelete={this.showDelete}*/}
+                {/*  showEdit={this.showEdit}*/}
+                {/*  mapping={this.state.mapping}*/}
+                {/*/>*/}
+              </Row>
+            </Block>
+          </div>
+        )}
       </div>
     )
   }
 
+// {this.state.loading && <LoadingIndicator/>}
+// {!this.state.loading && (
   onSelectTarget = (selectedTarget) => {
     this.setState({selectedTarget})
   };

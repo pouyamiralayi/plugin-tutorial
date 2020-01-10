@@ -1,7 +1,9 @@
 import styled from 'styled-components';
 import { ViewContainer } from 'strapi-helper-plugin';
 
-const Wrapper = styled(ViewContainer)`
+// const Wrapper = styled(ViewContainer)`
+const Wrapper = styled.div`
+  padding-top: 18px;
   .button-secondary {
     &:hover {
       background-color: #ffffff !important;
