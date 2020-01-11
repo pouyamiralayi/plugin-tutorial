@@ -39,6 +39,11 @@ function ListRow({
   //   removeAttribute,
   // } = useDataManager();
 
+  if(isFromDynamicZone){
+    console.log('row: ',name)
+    console.log('row: ',targetUid)
+  }
+
   const isInDevelopmentMode = true;
   const ico = ['integer', 'biginteger', 'float', 'decimal'].includes(type)
     ? 'number'

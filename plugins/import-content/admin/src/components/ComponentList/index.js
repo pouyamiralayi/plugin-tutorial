@@ -41,6 +41,7 @@ function ComponentList({
     <tr className="component-row">
       <Td colSpan={12} isChildOfDynamicZone={isFromDynamicZone}>
         <List
+          component={component}
           comps={comps}
           customRowComponent={customRowComponent}
           items={convertAttrObjToArray(attributes)}

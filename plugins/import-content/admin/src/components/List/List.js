@@ -91,7 +91,7 @@ const Wrapper = styled(List)`
           display: flex;
           flex-wrap: nowrap;
           overflow-x: auto;
-          overflow-y: hidden;
+          overflow-y: auto;
           li {
             margin-right: 9px;
           }

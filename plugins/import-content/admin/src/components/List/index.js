@@ -19,6 +19,7 @@ import Wrapper from './List';
 import {get, isEmpty} from "lodash"
 
 function List({
+                component,
                 className,
                 customRowComponent,
                 items,
@@ -36,6 +37,9 @@ function List({
                 comps
               }) {
   console.log("comps: (list2)", comps);
+  if(isFromDynamicZone){
+    console.log("comps: (dz)", comps);
+  }
   const {formatMessage} = useGlobalContext();
   // const { isInDevelopmentMode } = useDataManager();
   const isInDevelopmentMode = true;
@@ -85,8 +89,13 @@ function List({
           <tbody>
           {items.map(item => {
             console.log("item: ", item);
-            const comp = get(comps, [item.component], {});
+            const comp = get(comps, [item.component || component], {});
             const {type} = item;
+            if(isFromDynamicZone){
+              console.log("comp: (dz)", comp);
+              console.log("type: (dz)", type);
+              console.log("item: (dz)", item);
+            }
             const CustomRow = customRowComponent;
             return (
               <React.Fragment key={item.name}>
@@ -182,7 +191,8 @@ List.propTypes = {
   secondLoopComponentUid: PropTypes.string,
   targetUid: PropTypes.string,
   isSub: PropTypes.bool,
-  comps: PropTypes.object.isRequired
+  comps: PropTypes.object.isRequired,
+  component:PropTypes.string
 };
 
 export default List;

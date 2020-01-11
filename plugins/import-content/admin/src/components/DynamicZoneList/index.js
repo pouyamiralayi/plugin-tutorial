@@ -28,7 +28,7 @@ function DynamicZoneList({
                          }) {
   // const { isInDevelopmentMode } = useDataManager();
   const isInDevelopmentMode = true;
-  const [activeTab, setActiveTab] = useState('0');
+  const [activeTab, setActiveTab] = useState("0");
   const toggle = tab => {
     if (activeTab !== tab) {
       setActiveTab(tab)
@@ -75,7 +75,7 @@ function DynamicZoneList({
               })}
             </Nav>
           </div>
-          <TabContent activeTab={0}>
+          <TabContent activeTab={activeTab}>
             {components.map((component, index) => {
               const props = {
                 customRowComponent: customRowComponent,
