@@ -10,7 +10,7 @@ import getTrad from '../../utils/getTrad';
 import Curve from '../../icons/Curve';
 import UpperFist from '../UpperFirst';
 import Wrapper from './Wrapper';
-import {onClickDelete} from "../../../../../../.cache/plugins/strapi-plugin-users-permissions/admin/src/containers/EditPage/actions";
+// import {onClickDelete} from "../../../../../../.cache/plugins/strapi-plugin-users-permissions/admin/src/containers/EditPage/actions";
 
 function ListRow({
                    exportName,
@@ -30,7 +30,8 @@ function ListRow({
                    repeatable,
                    secondLoopComponentName,
                    secondLoopComponentUid,
-                   targetModel
+                   targetModel,
+                   onClickDelete
                  }) {
   // const {
   //   contentTypes,
@@ -218,7 +219,8 @@ ListRow.propTypes = {
   targetUid: PropTypes.string,
   type: PropTypes.string,
   targetModel: PropTypes.object,
-  exportName: PropTypes.string
+  exportName: PropTypes.string,
+  onClickDelete:PropTypes.func
 };
 
 export default memo(ListRow);

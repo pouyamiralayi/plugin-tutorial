@@ -93,7 +93,6 @@ function List({
                 <CustomRow
                   {...item}
                   targetUid={targetUid}
-                  // NEW props
                   mainTypeName={mainTypeName}
                   editTarget={editTarget}
                   firstLoopComponentName={firstLoopComponentName}

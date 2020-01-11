@@ -23,15 +23,19 @@ function ComponentList({
                          comps,
                        }) {
 
-  console.log("comp: ", comp);
+  // console.log("comp: ", comp);
   const {
     schema: {name: componentName, attributes},
     // } = get(modifiedData, ['components', component], {
   } = comp;
-    // get(comp,[], {
-    // schema: {attributes: {}},
+  // get(comp,[], {
+  // schema: {attributes: {}},
   // });
 
+  if (isFromDynamicZone) {
+    console.log("comp ==>", comp);
+    console.log("comp ==>", component);
+  }
 
   return (
     <tr className="component-row">
