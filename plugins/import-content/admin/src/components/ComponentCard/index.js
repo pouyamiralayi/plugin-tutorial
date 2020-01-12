@@ -15,6 +15,7 @@ import Close from './Close';
 
 function ComponentCard({
                          component,
+                         removeComponent, // NEW!
                          dzName,
                          index,
                          isActive,
@@ -39,7 +40,7 @@ function ComponentCard({
         className="close-btn"
         onClick={e => {
           e.stopPropagation();
-          // removeComponentFromDynamicZone(dzName, index);
+          removeComponent(dzName, index);
         }}
       >
         {isInDevelopmentMode && <Close width="7px" height="7px"/>}
@@ -64,6 +65,7 @@ ComponentCard.propTypes = {
   isActive: PropTypes.bool,
   isInDevelopmentMode: PropTypes.bool,
   onClick: PropTypes.func,
+  removeComponent: PropTypes.func
 };
 
 export default ComponentCard;

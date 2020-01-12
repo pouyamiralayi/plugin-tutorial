@@ -24,6 +24,7 @@ function List({
                 customRowComponent,
                 items,
                 addComponentToDZ,
+                removeComponentFromDZ, // NEW!
                 targetUid,
                 mainTypeName,
                 editTarget,
@@ -132,6 +133,7 @@ function List({
                     comps={comps}
                     customRowComponent={customRowComponent}
                     addComponent={addComponentToDZ}
+                    removeComponent={removeComponentFromDZ}
                     targetUid={targetUid}
                     mainTypeName={mainTypeName}
                   />
@@ -192,7 +194,8 @@ List.propTypes = {
   targetUid: PropTypes.string,
   isSub: PropTypes.bool,
   comps: PropTypes.object.isRequired,
-  component:PropTypes.string
+  component:PropTypes.string,
+  removeComponentFromDZ: PropTypes.func
 };
 
 export default List;

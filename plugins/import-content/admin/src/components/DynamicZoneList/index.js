@@ -21,6 +21,7 @@ function DynamicZoneList({
                            customRowComponent,
                            components,
                            addComponent,
+                           removeComponent, // NEW!
                            mainTypeName,
                            name,
                            targetUid,
@@ -65,6 +66,7 @@ function DynamicZoneList({
                       index={index}
                       component={get(comps, [component], {})}
                       isActive={activeTab === `${index}`}
+                      removeComponent={removeComponent}
                       isInDevelopmentMode={isInDevelopmentMode}
                       onClick={() => {
                         toggle(`${index}`);
@@ -124,7 +126,8 @@ DynamicZoneList.propTypes = {
   mainTypeName: PropTypes.string.isRequired,
   name: PropTypes.string,
   targetUid: PropTypes.string.isRequired,
-  comps: PropTypes.object
+  comps: PropTypes.object,
+  removeComponent: PropTypes.func
 };
 
 export default DynamicZoneList;

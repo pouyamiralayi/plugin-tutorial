@@ -10,6 +10,7 @@ import getTrad from '../../utils/getTrad';
 import Curve from '../../icons/Curve';
 import UpperFist from '../UpperFirst';
 import Wrapper from './Wrapper';
+
 // import {onClickDelete} from "../../../../../../.cache/plugins/strapi-plugin-users-permissions/admin/src/containers/EditPage/actions";
 
 function ListRow({
@@ -39,9 +40,9 @@ function ListRow({
   //   removeAttribute,
   // } = useDataManager();
 
-  if(isFromDynamicZone){
-    console.log('row: ',name)
-    console.log('row: ',targetUid)
+  if (isFromDynamicZone) {
+    console.log('row: ', name)
+    console.log('row: ', targetUid)
   }
 
   const isInDevelopmentMode = true;
@@ -88,6 +89,7 @@ function ListRow({
         secondLoopComponentUid || firstLoopComponentUid || targetUid,
         // Name of the attribute
         name,
+        mainTypeName,
         // Type of the attribute
         attrType,
         headerDisplayName,
@@ -155,9 +157,9 @@ function ListRow({
           <>
             {configurable ? (
               <>
-                <button type="button" onClick={handleClick}>
-                  <FontAwesomeIcon className="link-icon" icon="pencil-alt"/>
-                </button>
+                {/*<button type="button" onClick={handleClick}>*/}
+                {/*  <FontAwesomeIcon className="link-icon" icon="pencil-alt"/>*/}
+                {/*</button>*/}
                 <button
                   type="button"
                   onClick={e => {
@@ -168,7 +170,7 @@ function ListRow({
                     //   name,
                     //   secondLoopComponentUid || firstLoopComponentUid || ''
                     // );
-                    onClickDelete(editTarget, name, secondLoopComponentUid || firstLoopComponentUid || '')
+                    onClickDelete(isFromDynamicZone ? `dz ${editTarget}` : editTarget, name, secondLoopComponentUid || firstLoopComponentUid || '')
                   }}
                 >
                   <FontAwesomeIcon className="link-icon" icon="trash"/>
@@ -225,7 +227,7 @@ ListRow.propTypes = {
   type: PropTypes.string,
   targetModel: PropTypes.object,
   exportName: PropTypes.string,
-  onClickDelete:PropTypes.func
+  onClickDelete: PropTypes.func
 };
 
 export default memo(ListRow);

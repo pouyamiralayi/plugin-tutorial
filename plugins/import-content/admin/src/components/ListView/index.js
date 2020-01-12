@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 // import {Prompt, useHistory, useLocation} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {get, has, isEqual, isEmpty} from 'lodash';
+import {get, set, has, isEqual, isEmpty, cloneDeep} from 'lodash';
 import {
   BackHeader,
   ListWrapper,
@@ -35,7 +35,9 @@ const ListView = ({comps, targetModel}) => {
   const [attributesArray, updateAttributesArray] = useState([]);
   const [attributesLength, updateAttributesLength] = useState(0);
 
-  const [targetUid, updateTargetUid] = useState("");
+  const [exportConfig, updateExportConfig] = useState({});
+
+  const [selectedTargetUid, updateSelectedTargetUid] = useState("");
 
   const [currentDataName, updateCurrentDataName] = useState("");
 
@@ -45,6 +47,26 @@ const ListView = ({comps, targetModel}) => {
   }, [targetModel]);
 
   useEffect(() => {
+    const newExportConfig = {};
+    Object.keys(attributes)
+      .map(key => {
+        if (get(attributes, [key, 'type'], "") == 'dynamiczone') {
+          const dz = [];
+          for (const component of get(attributes, [key, 'components'], [])) {
+            dz.push({
+              // component,
+              ...comps[component]
+            })
+          }
+          const tmp = {...attributes[key], components: dz};
+          set(newExportConfig, [key], tmp);
+        } else {
+          set(newExportConfig, [key], attributes[key]);
+        }
+      });
+    updateExportConfig(newExportConfig);
+  }, [attributes]);
+  useEffect(() => {
     const attributesArray = convertAttrObjToArray(attributes);
     updateAttributesArray(attributesArray);
     const attributesLength = Object.keys(attributes).length;
@@ -53,7 +75,7 @@ const ListView = ({comps, targetModel}) => {
 
   useEffect(() => {
     const targetUid = get(targetModel, ['uid'], "");
-    updateTargetUid(targetUid);
+    updateSelectedTargetUid(targetUid);
   }, [targetModel]);
 
   useEffect(() => {
@@ -64,6 +86,8 @@ const ListView = ({comps, targetModel}) => {
     );
     updateCurrentDataName(currentDataName);
   }, [targetModel]);
+
+  console.log("exportConfig: ", exportConfig);
 
 
   // const [components, updateComponents] = useState({});
@@ -158,7 +182,7 @@ const ListView = ({comps, targetModel}) => {
     const search = {
       modalType: 'addComponentToDynamicZone',
       forTarget: 'contentType',
-      targetUid,
+      targetUid: selectedTargetUid,
       headerDisplayCategory: currentDataName,
       dynamicZoneTarget: dzName,
       settingType: 'base',
@@ -179,9 +203,10 @@ const ListView = ({comps, targetModel}) => {
   * */
   const handleClickEditField = async (
     exportName,
-    forTarget,
+    editTarget,
     targetUid,
     attributeName,
+    forTarget,
     type,
     headerDisplayName,
     headerDisplayCategory = null,
@@ -206,6 +231,26 @@ const ListView = ({comps, targetModel}) => {
         break;
       default:
         attributeType = type;
+    }
+    console.log(attributesArray);
+    if (targetUid == selectedTargetUid) {
+      // const newAttributes = cloneDeep(attributes);
+      // set(newAttributes, [attributeName, 'exportName'], exportName);
+      // updateAttributes(newAttributes);
+    } else {
+      // const parent_path = [subTargetUid];
+      // const item_path = [subTargetUid, targetUid];
+      // const parent = get(attributes, parent_path, {});
+      // if (!isEmpty(parent)) {
+      //   const newAttributes = cloneDeep(attributes);
+      //   set(newAttributes, [...item_path, 'exportName'], exportName);
+      //   updateAttributes(newAttributes);
+      // } else {
+      //   const item = get(attributes, [targetUid], {});
+      //   const newAttributes = cloneDeep(attributes);
+      //   set(newAttributes, [targetUid, 'exportName'], exportName);
+      //   updateAttributes(newAttributes);
+      // }
     }
 
     console.log({
@@ -234,6 +279,7 @@ const ListView = ({comps, targetModel}) => {
     await wait();
 
     // push({search: makeSearch(search, true)});
+
   };
 
   const getDescription = () => {
@@ -330,13 +376,13 @@ const ListView = ({comps, targetModel}) => {
     color: 'primary',
     label: formatMessage({id: `${pluginId}.button.attributes.add.another`}),
     onClick: () => {
-      handleClickOpenModalAddField(forTarget, targetUid, currentDataName);
+      handleClickOpenModalAddField(forTarget, selectedTargetUid, currentDataName);
     },
   };
   const goToCMSettingsPage = () => {
     const endPoint = isInContentTypeView
-      ? `/plugins/content-manager/${targetUid}/ctm-configurations/edit-settings/content-types`
-      : `/plugins/content-manager/ctm-configurations/edit-settings/components/${targetUid}/`;
+      ? `/plugins/content-manager/${selectedTargetUid}/ctm-configurations/edit-settings/content-types`
+      : `/plugins/content-manager/ctm-configurations/edit-settings/components/${selectedTargetUid}/`;
     push(endPoint);
   };
 
@@ -353,11 +399,16 @@ const ListView = ({comps, targetModel}) => {
     ? [{...configureButtonProps}, {...addButtonProps}]
     : [configureButtonProps];
 
-  const handleClickOnTrashIcon = () => {
+  const handleClickOnTrashIcon = (editTarget, name, uid) => {
+    console.log("Delete!", {editTarget, name, uid});
     /*TODO pick(attributes, [attrName])
     *      .filter(obj => obj.target != target)
     *       omit(attributes, [attrName])
     * */
+  };
+
+  function removeComponentFromDynamicZone(dzName, index) {
+    console.log("Delete! DZ", dzName + " -- ", index);
   };
 
   const CustomRow = props => {
@@ -413,7 +464,8 @@ const ListView = ({comps, targetModel}) => {
                       comps={comps}
                       customRowComponent={props => <CustomRow {...props} />}
                       addComponentToDZ={handleClickAddComponentToDZ}
-                      targetUid={targetUid}
+                      removeComponentFromDZ={removeComponentFromDynamicZone}
+                      targetUid={selectedTargetUid}
                       dataType={forTarget}
                       dataTypeName={currentDataName}
                       mainTypeName={currentDataName}
