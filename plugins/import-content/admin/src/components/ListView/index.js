@@ -2,23 +2,13 @@
 import React, {useEffect, useState} from 'react';
 // import {Prompt, useHistory, useLocation} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {get, set, has, isEqual, isEmpty, cloneDeep} from 'lodash';
-import {
-  BackHeader,
-  ListWrapper,
-  useGlobalContext,
-  LayoutIcon,
-  request,
-  LoadingIndicator
-} from 'strapi-helper-plugin';
-import {Header} from '@buffetjs/custom';
+import {get, has, isEmpty, isEqual, set} from 'lodash';
+import {LayoutIcon, ListWrapper, LoadingIndicator, useGlobalContext} from 'strapi-helper-plugin';
 import ListViewContext from '../../utils/ListViewContext';
 import convertAttrObjToArray from '../../utils/convertAttrObjToArray';
-import getTrad from '../../utils/getTrad';
 // import makeSearch from '../../utils/makeSearch';
 import ListRow from '../../components/ListRow';
 import List from '../../components/List';
-
 // import useDataManager from '../../hooks/useDataManager';
 import pluginId from '../../pluginId';
 
@@ -47,31 +37,15 @@ const ListView = ({comps, targetModel}) => {
   }, [targetModel]);
 
   useEffect(() => {
-    const newExportConfig = {};
-    Object.keys(attributes)
-      .map(key => {
-        if (get(attributes, [key, 'type'], "") == 'dynamiczone') {
-          const dz = [];
-          for (const component of get(attributes, [key, 'components'], [])) {
-            dz.push({
-              // component,
-              ...comps[component]
-            })
-          }
-          const tmp = {...attributes[key], components: dz};
-          set(newExportConfig, [key], tmp);
-        } else {
-          set(newExportConfig, [key], attributes[key]);
-        }
-      });
-    updateExportConfig(newExportConfig);
-  }, [attributes]);
-  useEffect(() => {
     const attributesArray = convertAttrObjToArray(attributes);
     updateAttributesArray(attributesArray);
     const attributesLength = Object.keys(attributes).length;
     updateAttributesLength(attributesLength)
   }, [attributes]);
+
+  useEffect(() => {
+    console.log("attributesArray: ", attributesArray)
+  }, [attributesArray]);
 
   useEffect(() => {
     const targetUid = get(targetModel, ['uid'], "");
@@ -87,7 +61,44 @@ const ListView = ({comps, targetModel}) => {
     updateCurrentDataName(currentDataName);
   }, [targetModel]);
 
-  console.log("exportConfig: ", exportConfig);
+  useEffect(() => {
+    const newExportConfig = {};
+    Object.keys(attributes)
+      .map(key => {
+        if (get(attributes, [key, 'type'], "") == 'component') {
+          // const targetCmpName = get(attributes, [key, 'component'], "");
+          // const targetCmp = {...comps[targetCmpName]};
+          // const targetCmpAttrs = get(comps[targetCmpName], ['schema', 'attributes'], {});
+          // Object.keys(targetCmpAttrs).map(k => {
+          //   if (get(targetCmpAttrs, [k, 'type'], "") == 'component') {
+          //     const childCmpName = get(targetCmpAttrs, [k, 'component'], "");
+          //     const childCmp = comps[childCmpName];
+          //     set(targetCmpAttrs, [k, 'component'], childCmp);
+          //   }
+          // });
+          // set(targetCmp, ['schema', 'attributes'], targetCmpAttrs);
+          // const cmp = {...attributes[key], component: targetCmp};
+          // set(newExportConfig, [key], cmp)
+        } else if (get(attributes, [key, 'type'], "") == 'dynamiczone') {
+          // const dz = [];
+          // for (const component of get(attributes, [key, 'components'], [])) {
+          //   dz.push({
+          //     // component,
+          //     ...comps[component]
+          //   })
+          // }
+          // const tmp = {...attributes[key], components: dz};
+          // set(newExportConfig, [key], tmp);
+        } else {
+        }
+        set(newExportConfig, [key], attributes[key]);
+      });
+    updateExportConfig(newExportConfig);
+  }, [attributes]);
+
+  useEffect(() => {
+    console.log('exportConfig: ', exportConfig);
+  }, [exportConfig]);
 
 
   // const [components, updateComponents] = useState({});
@@ -232,7 +243,7 @@ const ListView = ({comps, targetModel}) => {
       default:
         attributeType = type;
     }
-    console.log(attributesArray);
+    // console.log(attributesArray);
     if (targetUid == selectedTargetUid) {
       // const newAttributes = cloneDeep(attributes);
       // set(newAttributes, [attributeName, 'exportName'], exportName);

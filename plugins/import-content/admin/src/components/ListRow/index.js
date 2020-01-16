@@ -157,9 +157,9 @@ function ListRow({
           <>
             {configurable ? (
               <>
-                {/*<button type="button" onClick={handleClick}>*/}
-                {/*  <FontAwesomeIcon className="link-icon" icon="pencil-alt"/>*/}
-                {/*</button>*/}
+                <button type="button" onClick={handleClick}>
+                  <FontAwesomeIcon className="link-icon" icon="pencil-alt"/>
+                </button>
                 <button
                   type="button"
                   onClick={e => {

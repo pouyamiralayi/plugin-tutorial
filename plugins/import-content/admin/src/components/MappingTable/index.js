@@ -65,6 +65,7 @@ class MappingTable extends Component {
       </tr>
     );
   };
+
   changeMappingOptions = stat => options => {
     let newState = _.cloneDeep(this.state);
     for (let key in options) {
