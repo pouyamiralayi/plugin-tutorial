@@ -8,15 +8,16 @@ import {LoadingIndicator, request} from 'strapi-helper-plugin'
 import Block from "../../components/Block";
 import Row from "../../components/Row";
 import {Label, Select} from '@buffetjs/core'
+import {mode} from "simple-statistics";
 
 const ExportData = () => {
   const [state, dispatch] = useReducer(reducer, store);
-  const [targetModel, updateTargetModel] = useState("");
+  const [targetModelName, updateTargetModelName] = useState("");
+  const [targetModelObj, updateTargetModelObj] = useState("");
   const [targetUid, updateTargetUid] = useState("");
   const [targetName, updateTargetName] = useState("");
 
   const [modelOptions, updateModelOptions] = useState([]);
-
 
   /*1.receive models & components*/
   useEffect(() => {
@@ -41,26 +42,29 @@ const ExportData = () => {
 
   /*3.set targetModel to the first option*/
   useEffect(() => {
-    modelOptions && updateTargetModel(modelOptions[0]);
+    modelOptions && modelOptions[0] && updateTargetModelName(modelOptions[0].value);
   }, [modelOptions]);
 
-  /*4.based on targetModel, fetch the attributes*/
+  /*4.based on targetModel, fetch the model actual object & attributes*/
   useEffect(() => {
     const models = get(state, [MODELS], []);
     if (!models) return;
-    const target = models.find(model => model.uid === targetModel);
+    const target = models.find(model => model.uid === targetModelName);
+    target && updateTargetModelObj(target);
     const attrs = target && get(target, ['schema', 'attributes'], {});
     attrs && dispatch({type: SET_ATTRIBUTES, payload: attrs})
-    // const attributesArray = attrs && convertAttrObjToArray(attrs);
-    // attributesArray && dispatch({type: SET_ATTRIBUTES_ARRAY, payload: attributesArray})
-  }, [targetModel]);
+  }, [targetModelName]);
 
+  /*5.based on targetModelObj, fetch the uid & name of the model*/
   useEffect(() => {
-    const targetUid = get(targetModel, ['uid'], "");
-    updateSelectedTargetUid(targetUid);
-  }, [targetModel]);
+    const targetUid = get(targetModelObj, ['uid'], "");
+    const targetName = get(targetModelObj, ['schema', 'name'], "");
+    targetUid && updateTargetUid(targetUid);
+    targetName && updateTargetName(targetName);
+  }, [targetModelObj]);
+
   const onSelectTarget = (targetModel) => {
-    updateTargetModel(targetModel)
+    updateTargetModelName(targetModel)
   };
 
   const getComponents = async () => { // todo error
@@ -100,7 +104,7 @@ const ExportData = () => {
               <Select
                 name={"targetContentType"}
                 options={modelOptions}
-                value={targetModel}
+                value={targetModelName}
                 onChange={({target: {value}}) =>
                   onSelectTarget(value)}
               />
