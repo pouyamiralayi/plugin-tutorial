@@ -1,14 +1,9 @@
-import React, {useEffect, useState, useReducer, useContext} from 'react';
+import React, {useContext} from 'react';
 import PropTypes from 'prop-types'
 import ListViewContext from "../../utils/ListViewContext";
-import {ATTRIBUTES, ATTRIBUTES_ARRAY, COMPONENTS, LOADING} from "../../utils/constants";
-import {get, keys} from 'lodash'
-import {LoadingIndicator, ListWrapper} from 'strapi-helper-plugin'
-import Block from "../Block";
-import convertAttrObjToArray from "../../utils/convertAttrObjToArray";
+import {ATTRIBUTES_ARRAY, COMPONENTS, TARGET, TARGET_NAME, TARGET_UID} from "../../utils/constants";
+import {get} from 'lodash'
 import Wrapper from '../List/List'
-import ListHeader from "../ListHeader";
-import pluginId from "../../pluginId";
 
 const ContentTypeList = ({
                            isFromDynamicZone,
@@ -17,6 +12,8 @@ const ContentTypeList = ({
                          }) => {
   const {state, dispatch} = useContext(ListViewContext);
   const attrArray = get(state, [ATTRIBUTES_ARRAY], []);
+  const targetUid = get(state, [TARGET, 'uid'], "");
+  const targetName = get(state, [TARGET, 'schema', 'name'], "");
   return (
     <>
       <Wrapper isFromDynamicZone={isFromDynamicZone}>
@@ -26,18 +23,11 @@ const ContentTypeList = ({
             const comp = get(state, [COMPONENTS, item.component || component], {});
             const {type} = item;
             const CustomRow = customRowComponent;
+            // console.log(item);
             return (
               <React.Fragment key={item.name}>
                 <CustomRow
                   {...item}
-                  isFromDynamicZone={isFromDynamicZone}
-                  // targetUid={targetUid}
-                  // editTarget={editTarget}
-                  // mainTypeName={mainTypeName}
-                  // firstLoopComponentName={firstLoopComponentName}
-                  // firstLoopComponentUid={firstLoopComponentUid}
-                  // secondLoopComponentName={secondLoopComponentName}
-                  // secondLoopComponentUid={secondLoopComponentUid}
                 />
               </React.Fragment>
             )
@@ -52,6 +42,7 @@ const ContentTypeList = ({
 ContentTypeList.defaultProps = {
   isFromDynamicZone: false,
   customRowComponent: null,
+  component: null,
 };
 
 ContentTypeList.propTypes = {

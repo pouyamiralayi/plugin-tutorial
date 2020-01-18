@@ -1,10 +1,22 @@
 import {isEmpty, set} from 'lodash'
 import {
   ADD_COMPONENT,
-  ATTRIBUTES, ATTRIBUTES_ARRAY,
-  COMPONENTS, LOADING, MODELS,
-  SET_ATTRIBUTES, SET_ATTRIBUTES_ARRAY,
-  SET_COMPONENTS, SET_MODELS, TOGGLE_LOADING
+  ATTRIBUTES,
+  ATTRIBUTES_ARRAY,
+  COMPONENTS,
+  LOADING,
+  MODELS,
+  SET_ATTRIBUTES,
+  SET_ATTRIBUTES_ARRAY,
+  SET_COMPONENTS,
+  SET_MODELS,
+  SET_TARGET,
+  SET_TARGET_NAME,
+  SET_TARGET_UID,
+  TARGET,
+  TARGET_NAME,
+  TARGET_UID,
+  TOGGLE_LOADING
 } from "../../utils/constants";
 
 export const store = {
@@ -12,6 +24,9 @@ export const store = {
   [MODELS]: [],
   [ATTRIBUTES]: {},
   [ATTRIBUTES_ARRAY]: [],
+  [TARGET]: {},
+  [TARGET_UID]: "",
+  [TARGET_NAME]: "",
   contentTypes: {},
   initialComponents: {},
   intialContentTypes: {},
@@ -69,6 +84,36 @@ export const reducer = (state, action) => {
       if (!isEmpty(attrs)) {
         const newState = {...state};
         set(newState, [ATTRIBUTES_ARRAY], attrs);
+        return newState
+      } else {
+        return state
+      }
+    }
+    case SET_TARGET: {
+      const target = action.payload;
+      if (!isEmpty(target)) {
+        const newState = {...state};
+        set(newState, [TARGET], target);
+        return newState
+      } else {
+        return state
+      }
+    }
+    case SET_TARGET_UID: {
+      const target = action.payload;
+      if (!isEmpty(target)) {
+        const newState = {...state};
+        set(newState, [TARGET_UID], target);
+        return newState
+      } else {
+        return state
+      }
+    }
+    case SET_TARGET_NAME: {
+      const target = action.payload;
+      if (!isEmpty(target)) {
+        const newState = {...state};
+        set(newState, [TARGET_NAME], target);
         return newState
       } else {
         return state

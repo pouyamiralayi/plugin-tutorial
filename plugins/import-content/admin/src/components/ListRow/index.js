@@ -34,18 +34,8 @@ function ListRow({
                    targetModel,
                    onClickDelete
                  }) {
-  // const {
-  //   contentTypes,
-  //   isInDevelopmentMode,
-  //   removeAttribute,
-  // } = useDataManager();
 
-  if (isFromDynamicZone) {
-    console.log('row: ', name);
-    console.log('row: ', targetUid)
-  }
 
-  const isInDevelopmentMode = true;
   const ico = ['integer', 'biginteger', 'float', 'decimal'].includes(type)
     ? 'number'
     : type;
@@ -61,11 +51,6 @@ function ListRow({
     ['schema', 'name'],
     ''
   );
-  // const contentTypeFriendlyName = get(
-  //   contentTypes,
-  //   [target, 'schema', 'name'],
-  //   ''
-  // );
   const src = target ? 'relation' : ico;
 
   const handleClick = () => {

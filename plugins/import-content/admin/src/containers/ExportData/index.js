@@ -1,14 +1,24 @@
 import React, {useEffect, useReducer, useState} from 'react';
 import {reducer, store} from "../DataManagerProvider/reducer";
-import {get, has} from "lodash";
-import {LOADING, MODELS, SET_ATTRIBUTES, SET_COMPONENTS, SET_MODELS, TOGGLE_LOADING} from "../../utils/constants";
+import {get, has, isEmpty} from "lodash";
+import {
+  LOADING,
+  MODELS,
+  SET_ATTRIBUTES,
+  SET_ATTRIBUTES_ARRAY,
+  SET_COMPONENTS,
+  SET_MODELS, SET_TARGET,
+  SET_TARGET_NAME,
+  SET_TARGET_UID, TARGET,
+  TOGGLE_LOADING
+} from "../../utils/constants";
 import ListViewContext from "../../utils/ListViewContext";
 import ContentTypeTree from "../../components/ContentTypeTree";
 import {LoadingIndicator, request} from 'strapi-helper-plugin'
 import Block from "../../components/Block";
 import Row from "../../components/Row";
 import {Label, Select} from '@buffetjs/core'
-import {mode} from "simple-statistics";
+import convertAttrObjToArray from "../../utils/convertAttrObjToArray";
 
 const ExportData = () => {
   const [state, dispatch] = useReducer(reducer, store);
@@ -42,7 +52,9 @@ const ExportData = () => {
 
   /*3.set targetModel to the first option*/
   useEffect(() => {
-    modelOptions && modelOptions[0] && updateTargetModelName(modelOptions[0].value);
+    if (!isEmpty(get(modelOptions, ["0", "value"], ""))) {
+      updateTargetModelName(modelOptions[0].value);
+    }
   }, [modelOptions]);
 
   /*4.based on targetModel, fetch the model actual object & attributes*/
@@ -50,18 +62,13 @@ const ExportData = () => {
     const models = get(state, [MODELS], []);
     if (!models) return;
     const target = models.find(model => model.uid === targetModelName);
-    target && updateTargetModelObj(target);
+    target && dispatch({type: SET_TARGET, payload: target});
     const attrs = target && get(target, ['schema', 'attributes'], {});
-    attrs && dispatch({type: SET_ATTRIBUTES, payload: attrs})
+    const attrs_array = attrs && convertAttrObjToArray(attrs); // todo move this to sub-components state
+    attrs && dispatch({type: SET_ATTRIBUTES, payload: attrs});
+    attrs_array && dispatch({type: SET_ATTRIBUTES_ARRAY, payload: attrs_array})
   }, [targetModelName]);
 
-  /*5.based on targetModelObj, fetch the uid & name of the model*/
-  useEffect(() => {
-    const targetUid = get(targetModelObj, ['uid'], "");
-    const targetName = get(targetModelObj, ['schema', 'name'], "");
-    targetUid && updateTargetUid(targetUid);
-    targetName && updateTargetName(targetName);
-  }, [targetModelObj]);
 
   const onSelectTarget = (targetModel) => {
     updateTargetModelName(targetModel)
