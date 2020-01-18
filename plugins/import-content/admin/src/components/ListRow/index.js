@@ -41,7 +41,7 @@ function ListRow({
   // } = useDataManager();
 
   if (isFromDynamicZone) {
-    console.log('row: ', name)
+    console.log('row: ', name);
     console.log('row: ', targetUid)
   }
 

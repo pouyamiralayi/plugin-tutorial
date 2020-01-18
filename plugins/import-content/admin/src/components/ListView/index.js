@@ -1,10 +1,10 @@
 // import React from 'react';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useReducer, useContext} from 'react';
+import ListViewContext from "../../utils/ListViewContext";
 // import {Prompt, useHistory, useLocation} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {get, has, isEmpty, isEqual, set} from 'lodash';
 import {LayoutIcon, ListWrapper, LoadingIndicator, useGlobalContext} from 'strapi-helper-plugin';
-import ListViewContext from '../../utils/ListViewContext';
 import convertAttrObjToArray from '../../utils/convertAttrObjToArray';
 // import makeSearch from '../../utils/makeSearch';
 import ListRow from '../../components/ListRow';
@@ -16,10 +16,15 @@ import ListHeader from '../../components/ListHeader';
 // import LeftMenu from '../LeftMenu';
 import Wrapper from './Wrapper';
 
+
+import {SET_ATTRIBUTES, SET_COMPONENTS} from "../../utils/constants";
+
 /*props:
 * targetModel -> PropTypes.object.isRequired
 * */
 const ListView = ({comps, targetModel}) => {
+
+  const {state, dispatch} = useContext(ListViewContext);
 
   const [attributes, updateAttributes] = useState({});
   const [attributesArray, updateAttributesArray] = useState([]);
@@ -31,21 +36,26 @@ const ListView = ({comps, targetModel}) => {
 
   const [currentDataName, updateCurrentDataName] = useState("");
 
+  dispatch({type: SET_COMPONENTS, payload: comps});
+  dispatch({type: SET_ATTRIBUTES, payload: attributes});
+  useEffect(() => {
+  }, [comps]);
+
   useEffect(() => {
     const attributes = get(targetModel, ['schema', 'attributes'], {});
-    updateAttributes(attributes);
+    // updateAttributes(attributes);
   }, [targetModel]);
 
-  useEffect(() => {
-    const attributesArray = convertAttrObjToArray(attributes);
-    updateAttributesArray(attributesArray);
-    const attributesLength = Object.keys(attributes).length;
-    updateAttributesLength(attributesLength)
-  }, [attributes]);
+  // useEffect(() => {
+  //   const attributesArray = convertAttrObjToArray(attributes);
+  //   updateAttributesArray(attributesArray);
+  //   const attributesLength = Object.keys(attributes).length;
+  //   updateAttributesLength(attributesLength)
+  // }, [attributes]);
 
-  useEffect(() => {
-    console.log("attributesArray: ", attributesArray)
-  }, [attributesArray]);
+  // useEffect(() => {
+  //   console.log("attributesArray: ", attributesArray)
+  // }, [attributesArray]);
 
   useEffect(() => {
     const targetUid = get(targetModel, ['uid'], "");
@@ -135,7 +145,6 @@ const ListView = ({comps, targetModel}) => {
     submitData: null,
     toggleModalCancel: null
   };
-  let compo;
   const {emitEvent, formatMessage} = useGlobalContext();
   // const {push, goBack} = useHistory();
   // const {search} = useLocation();
@@ -446,51 +455,47 @@ const ListView = ({comps, targetModel}) => {
   };
 
   return (
-    <ListViewContext.Provider
-      value={{openModalAddField: handleClickOpenModalAddField}}
-    >
-      <Wrapper>
-        {/*<BackHeader onClick={goBack}/>*/}
-        {/*<Prompt*/}
-        {/*  message={formatMessage({id: getTrad('prompt.unsaved')})}*/}
-        {/*  when={hasModelBeenModified && enablePrompt}*/}
-        {/*/>*/}
-        <div className="container-fluid">
-          <div className="row">
-            {/*<LeftMenu wait={wait}/>*/}
-            <div
-              className="row col-12"
-              // style={{paddingLeft: '30px', paddingRight: '30px'}}
-            >
-              {/*TODO fieldName && selectTarget*/}
-              {/*<Header {...headerProps} />*/}
+    <Wrapper>
+      {/*<BackHeader onClick={goBack}/>*/}
+      {/*<Prompt*/}
+      {/*  message={formatMessage({id: getTrad('prompt.unsaved')})}*/}
+      {/*  when={hasModelBeenModified && enablePrompt}*/}
+      {/*/>*/}
+      <div className="container-fluid">
+        <div className="row">
+          {/*<LeftMenu wait={wait}/>*/}
+          <div
+            className="row col-12"
+            // style={{paddingLeft: '30px', paddingRight: '30px'}}
+          >
+            {/*TODO fieldName && selectTarget*/}
+            {/*<Header {...headerProps} />*/}
 
-              <ListWrapper style={{marginBottom: 80}}>
-                {/*<ListHeader actions={listActions} title={listTitle}/>*/}
-                <ListHeader title={listTitle}/>
-                {isEmpty(comps) ? (<LoadingIndicator/>) :
-                  (
-                    <List
-                      items={attributesArray}
-                      comps={comps}
-                      customRowComponent={props => <CustomRow {...props} />}
-                      addComponentToDZ={handleClickAddComponentToDZ}
-                      removeComponentFromDZ={removeComponentFromDynamicZone}
-                      targetUid={selectedTargetUid}
-                      dataType={forTarget}
-                      dataTypeName={currentDataName}
-                      mainTypeName={currentDataName}
-                      editTarget={forTarget}
-                      isMain
-                    />
-                  )
-                }
-              </ListWrapper>
-            </div>
+            <ListWrapper style={{marginBottom: 80}}>
+              {/*<ListHeader actions={listActions} title={listTitle}/>*/}
+              <ListHeader title={listTitle}/>
+              {isEmpty(comps) ? (<LoadingIndicator/>) :
+                (
+                  <List
+                    items={attributesArray}
+                    comps={comps}
+                    customRowComponent={props => <CustomRow {...props} />}
+                    addComponentToDZ={handleClickAddComponentToDZ}
+                    removeComponentFromDZ={removeComponentFromDynamicZone}
+                    targetUid={selectedTargetUid}
+                    dataType={forTarget}
+                    dataTypeName={currentDataName}
+                    mainTypeName={currentDataName}
+                    editTarget={forTarget}
+                    isMain
+                  />
+                )
+              }
+            </ListWrapper>
           </div>
         </div>
-      </Wrapper>
-    </ListViewContext.Provider>
+      </div>
+    </Wrapper>
   );
 };
 

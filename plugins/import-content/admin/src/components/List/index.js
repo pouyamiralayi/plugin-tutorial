@@ -18,6 +18,11 @@ import ComponentList from '../ComponentList';
 import Wrapper from './List';
 import {get, isEmpty} from "lodash"
 
+import {useEffect, useContext} from 'react'
+import ListViewContext from "../../utils/ListViewContext";
+import convertAttrObjToArray from "../../utils/convertAttrObjToArray";
+import {ATTRIBUTES} from "../../utils/constants";
+
 function List({
                 component,
                 className,
@@ -37,8 +42,21 @@ function List({
                 isSub,
                 comps
               }) {
+
+  const {state, dispatch} = useContext(ListViewContext);
+  const attrs = get(state, [ATTRIBUTES], {});
+  let attrArray;
+  attrArray = convertAttrObjToArray(attrs);
+
+
+  useEffect(() => {
+  }, []);
+  console.log("STATE: ", state);
+  console.log("ATTRIBUTES: ", attrs);
+  console.log("ATTRIBUTES ARRAY:", attrArray);
+
   console.log("comps: (list2)", comps);
-  if(isFromDynamicZone){
+  if (isFromDynamicZone) {
     console.log("comps: (dz)", comps);
   }
   const {formatMessage} = useGlobalContext();
@@ -88,11 +106,12 @@ function List({
       <Wrapper className={className} isFromDynamicZone={isFromDynamicZone}>
         <table>
           <tbody>
-          {items.map(item => {
+          {attrArray && attrArray.map(item => {
+            // {items.map(item => {
             console.log("item: ", item);
             const comp = get(comps, [item.component || component], {});
             const {type} = item;
-            if(isFromDynamicZone){
+            if (isFromDynamicZone) {
               console.log("comp: (dz)", comp);
               console.log("type: (dz)", type);
               console.log("item: (dz)", item);
@@ -194,7 +213,7 @@ List.propTypes = {
   targetUid: PropTypes.string,
   isSub: PropTypes.bool,
   comps: PropTypes.object.isRequired,
-  component:PropTypes.string,
+  component: PropTypes.string,
   removeComponentFromDZ: PropTypes.func
 };
 

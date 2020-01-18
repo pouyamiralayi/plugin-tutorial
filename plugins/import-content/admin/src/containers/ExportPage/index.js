@@ -1,19 +1,15 @@
 import React, {Component} from "react"
-import {PluginHeader, HeaderNav, LoadingIndicator, request, PopUpWarning} from 'strapi-helper-plugin'
+import {HeaderNav, LoadingIndicator, PluginHeader, PopUpWarning, request} from 'strapi-helper-plugin'
 import Block from '../../components/Block'
 import Row from "../../components/Row";
-import ExportMapping from "../../components/ExportMappingTable";
 import pluginId from "../../pluginId";
-import FormModal from "../../components/FormModal";
 import FormModalEdit from "../../components/FormModalEdit";
-import {get, has, pick, keys, omit, isEmpty} from 'lodash'
-import {Select, Button, Label} from "@buffetjs/core";
+import {get, has, isEmpty, omit} from 'lodash'
+import {Button, Label, Select} from "@buffetjs/core";
 import ListView from "../../components/ListView";
-import {mode} from "simple-statistics";
 
 const getUrl = to =>
   to ? `/plugins/${pluginId}/${to}` : `/plugins/${pluginId}`;
-
 
 class ExportPage extends Component {
   /*state -> exported item? received from the server

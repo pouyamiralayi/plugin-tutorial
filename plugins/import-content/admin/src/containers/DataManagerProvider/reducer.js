@@ -1,70 +1,84 @@
-import {fromJS, OrderedMap} from 'immutable'
-import {get, has} from 'lodash'
-import makeUnique from "../../utils/makeUnique";
+import {isEmpty, set} from 'lodash'
+import {
+  ADD_COMPONENT,
+  ATTRIBUTES, ATTRIBUTES_ARRAY,
+  COMPONENTS, LOADING, MODELS,
+  SET_ATTRIBUTES, SET_ATTRIBUTES_ARRAY,
+  SET_COMPONENTS, SET_MODELS, TOGGLE_LOADING
+} from "../../utils/constants";
 
-const initialState = fromJS({
-  components: {},
+export const store = {
+  [COMPONENTS]: {},
+  [MODELS]: [],
+  [ATTRIBUTES]: {},
+  [ATTRIBUTES_ARRAY]: [],
   contentTypes: {},
   initialComponents: {},
   intialContentTypes: {},
   initialData: {},
   modifiedData: {},
-  isLoading: true,
+  [LOADING]: true,
   isLoadingForDataToBeSet: true,
-});
+};
 
-const reducer = (state, action) => {
-    switch (action.type) {
-      case 'EDIT_ATTRIBUTE': {
-        const {
-          attributeToSet: {name, ...rest},
-          forTarget,
-          targetUid,
-          initialAttribute,
-        } = action;
-        let newState = state;
-        const initialAttributeName = get(initialAttribute, ['name'], '');
-        const pathToDataToEdit = ['component', 'contentType'].includes(forTarget)
-          ? [forTarget]
-          : [forTarget, targetUid];
 
-        const isEditingComponentAttribute = rest.type === 'component';
-        if (isEditingComponentAttribute) {
-          newState = state.updateIn(
-            ['modifiedData', 'components', rest.component],
-            () => state.getIn(['components', rest.component])
-          );
-        }
-
-        return newState.updateIn(
-          ['modifiedData', ...pathToDataToEdit, 'schema'],
-          obj => {
-            const newObj = OrderedMap(
-              obj
-                .get('attributes')
-                .keySeq()
-                .reduce((acc, current) => {
-                  const isEditingCurrentAttribute =
-                    current === initialAttributeName;
-                  if (isEditingCurrentAttribute) {
-                    const currentUid = state.getIn([
-                      'modifiedData',
-                      ...pathToDataToEdit,
-                      'uid',
-                    ]);
-
-                    // First update the current attribute with the value
-                    acc[name] = fromJS(rest);
-                  } else {
-                    acc[current] = obj.getIn(['attributes', current]);
-                  }
-                  return acc;
-                }, {})
-            );
-            return obj.set('attributes', newObj);
-          })
-
+export const reducer = (state, action) => {
+  switch (action.type) {
+    case ADD_COMPONENT: {
+      const comp = action.payload;
+      if (!isEmpty(comp)) {
+        const newState = {...state};
+        set(newState, [COMPONENTS, comp.uid], comp);
+        return newState
+      } else {
+        return state
       }
     }
+    case SET_COMPONENTS: {
+      const comps = action.payload;
+      if (!isEmpty(comps)) {
+        const newState = {...state};
+        set(newState, [COMPONENTS], comps);
+        return newState
+      } else {
+        return state
+      }
+    }
+    case SET_MODELS: {
+      const models = action.payload;
+      if (!isEmpty(models)) {
+        const newState = {...state};
+        set(newState, [MODELS], models);
+        return newState
+      } else {
+        return state
+      }
+    }
+    case SET_ATTRIBUTES: {
+      const attrs = action.payload;
+      if (!isEmpty(attrs)) {
+        const newState = {...state};
+        set(newState, [ATTRIBUTES], attrs);
+        return newState
+      } else {
+        return state
+      }
+    }
+    case SET_ATTRIBUTES_ARRAY: {
+      const attrs = action.payload;
+      if (!isEmpty(attrs)) {
+        const newState = {...state};
+        set(newState, [ATTRIBUTES_ARRAY], attrs);
+        return newState
+      } else {
+        return state
+      }
+    }
+    case TOGGLE_LOADING: {
+      return {...state, [LOADING]: action.payload}
+    }
+    default:
+      return state
   }
-;
+
+};
