@@ -20,7 +20,7 @@ const ComponentTree = ({
   useEffect(() => {
     const {schema: {name: componentName, attributes}} = get(state, [COMPONENTS, component], {schema: {attributes: {}}});
     const attrArray = convertAttrObjToArray(attributes) || [];
-    console.log(attrArray);
+    // console.log(attrArray);
     updateAttrsArray(attrArray);
     // console.log(attrArray);
     updateComponentName(componentName)

@@ -2,8 +2,9 @@ import React, {useEffect, useReducer, useState} from 'react';
 import {reducer, store} from "../DataManagerProvider/reducer";
 import {get, has, isEmpty} from "lodash";
 import {
+  ATTRIBUTES,
   LOADING,
-  MODELS,
+  MODELS, SCHEMA,
   SET_ATTRIBUTES,
   SET_ATTRIBUTES_ARRAY,
   SET_COMPONENTS,
@@ -33,21 +34,14 @@ const ExportData = () => {
   useEffect(() => {
     getComponents();
     getModels();
-    setTimeout(() => {
+    // setTimeout(() => {
       dispatch({type: TOGGLE_LOADING, payload: false});
-    }, 1000)
+    // }, 1000)
   }, []);
 
   /*2.generate modelOptions*/
   useEffect(() => {
-    const models = get(state, [MODELS], []);
-    const modelOptions = models.map(model => {
-      return {
-        label: get(model, ["schema", "name"], ""),
-        value: model.uid
-      }
-    });
-    updateModelOptions(modelOptions);
+
   }, [state]);
 
   /*3.set targetModel to the first option*/
@@ -64,7 +58,7 @@ const ExportData = () => {
     if (!models) return;
     const target = models.find(model => model.uid === targetModelName);
     target && dispatch({type: SET_TARGET, payload: target});
-    const attrs = target && get(target, ['schema', 'attributes'], {});
+    const attrs = target && get(target, [SCHEMA, ATTRIBUTES], {});
     attrs && dispatch({type: SET_ATTRIBUTES, payload: attrs});
     // const attrs_array = attrs && convertAttrObjToArray(attrs); // todo move this to sub-components state
     // attrs_array && dispatch({type: SET_ATTRIBUTES_ARRAY, payload: attrs_array})
@@ -92,7 +86,14 @@ const ExportData = () => {
     const models = get(response, ["data"], []).filter(
       obj => !has(obj, "plugin")
     );
-    dispatch({type: SET_MODELS, payload: models})
+    const modelOptions = models.map(model => {
+      return {
+        label: get(model, ["schema", "name"], ""),
+        value: model.uid
+      }
+    });
+    dispatch({type: SET_MODELS, payload: models});
+    updateModelOptions(modelOptions);
   };
 
   return (
