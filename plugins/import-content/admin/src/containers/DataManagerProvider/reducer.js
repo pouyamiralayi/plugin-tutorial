@@ -1,11 +1,11 @@
-import {isEmpty, set} from 'lodash'
+import {isEmpty, get, set, keys, pick} from 'lodash'
 import {
   ADD_COMPONENT,
   ATTRIBUTES,
   ATTRIBUTES_ARRAY,
   COMPONENTS, DELETE_ACTION, EDIT_ATTRIBUTE, EXPORT_NAME,
   LOADING,
-  MODELS, PERFORM_DELETE_ACTION, REMOVE_COMPONENT_FROM_DYNAMIC_ZONE, SCHEMA,
+  MODELS, PERFORM_DELETE_ACTION, REMOVE_ATTRIBUTE, REMOVE_COMPONENT_FROM_DYNAMIC_ZONE, SCHEMA,
   SET_ATTRIBUTES,
   SET_ATTRIBUTES_ARRAY,
   SET_COMPONENTS,
@@ -33,8 +33,6 @@ export const store = {
   initialData: {},
   modifiedData: {},
   [LOADING]: true,
-  [SHOW_DELETE_MODAL]: false,
-  [DELETE_ACTION]: false,
   isLoadingForDataToBeSet: true,
 };
 
@@ -86,6 +84,20 @@ export const reducer = (state, action) => {
       }
       return state
     }
+    case REMOVE_ATTRIBUTE: {
+      if (!isEmpty(action.payload)) {
+        const {attributeName, exportName, editTarget, targetUid, targetName} = action.payload;
+        const newState = {...state};
+        if (editTarget === 'contentType') {
+          const newKeys = keys(get(state, [ATTRIBUTES], {}))
+            .filter(k => k != attributeName);
+          const newAttrs = pick(state, newKeys);
+          set(newState, [ATTRIBUTES], newAttrs);
+          return newState
+        }
+        return state
+      }
+    }
     case EDIT_ATTRIBUTE: {
       if (!isEmpty(action.payload)) {
         const {attributeName, exportName, editTarget, targetUid, targetName} = action.payload;
@@ -133,28 +145,12 @@ export const reducer = (state, action) => {
     }
     case REMOVE_COMPONENT_FROM_DYNAMIC_ZONE: {
       if (!isEmpty(action.payload)) {
-        const {dzname: dzName, idx} = action.payload;
+        const {dzName, idx} = action.payload;
         const newState = {...state};
-        const comps = get(state, [ATTRIBUTES, dzName, COMPONENTS], [])
-          .filter((cmp, i) => i != idx
-          );
+        const comps = get(state, [ATTRIBUTES, dzName, COMPONENTS], []);
+        comps.splice(idx, 1);
+        // console.log(comps);
         set(newState, [ATTRIBUTES, dzName, COMPONENTS], comps);
-        return newState
-      }
-      return state
-    }
-    case TOGGLE_DELETE_MODAL: {
-      if (!isEmpty(action.payload)) {
-        const newState = {...state};
-        set(newState, [SHOW_DELETE_MODAL], action.payload);
-        return newState
-      }
-      return state
-    }
-    case PERFORM_DELETE_ACTION: {
-      if (!isEmpty(action.payload)) {
-        const newState = {...state};
-        set(newState, [DELETE_ACTION], action.payload);
         return newState
       }
       return state

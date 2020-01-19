@@ -21,7 +21,7 @@ const ComponentTree = ({
     const {schema: {name: componentName, attributes}} = get(state, [COMPONENTS, component], {schema: {attributes: {}}});
     const attrArray = convertAttrObjToArray(attributes);
     updateAttrsArray(attrArray);
-    console.log(attrArray);
+    // console.log(attrArray);
     updateComponentName(componentName)
   }, [component, state]);
 

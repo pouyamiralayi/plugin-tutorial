@@ -4,7 +4,7 @@ import {
   ATTRIBUTES,
   ATTRIBUTES_ARRAY,
   EDIT_ATTRIBUTE,
-  PERFORM_DELETE_ACTION, SHOW_DELETE_MODAL,
+  PERFORM_DELETE_ACTION, REMOVE_ATTRIBUTE, SHOW_DELETE_MODAL,
   TARGET,
   TOGGLE_DELETE_MODAL
 } from "../../utils/constants";
@@ -28,6 +28,7 @@ const ContentTypeTree = () => {
   const [showDeleteModal, toggleShowDeleteModal] = useState(false);
   const [showEditModal, toggleShowEditModal] = useState(false);
   const [fieldToEdit, updateFieldToEdit] = useState({});
+  const [fieldToDelete, updateFieldToDelete] = useState({});
 
   const targetUid = get(state, [TARGET, 'uid'], "");
   const targetName = get(state, [TARGET, 'schema', 'name'], "");
@@ -61,11 +62,19 @@ const ContentTypeTree = () => {
     toggleShowEditModal(false)
   };
 
+
   const showEdit = (fieldName, exportName, targetUid, targetName, editTarget) => {
     // console.log({fieldName, exportName, targetUid, targetName,editTarget});
     updateFieldToEdit({fieldName, exportName, targetUid, editTarget, targetName});
     toggleShowEditModal(true)
   };
+
+  const showDelete = (fieldName, exportName, targetUid, targetName, editTarget) => {
+    // console.log({fieldName, exportName, targetUid, targetName,editTarget});
+    updateFieldToDelete({fieldName, exportName, targetUid, editTarget, targetName});
+    toggleShowDeleteModal(true)
+  };
+
 
   const CustomRow = props => {
     return (
@@ -96,7 +105,7 @@ const ContentTypeTree = () => {
                 }}
                 popUpWarningType="danger"
                 onConfirm={async () => {
-                  dispatch({type: PERFORM_DELETE_ACTION, payload: true})
+                  dispatch({type: REMOVE_ATTRIBUTE, payload: fieldToDelete})
                 }}
               />
               <FormModalEdit

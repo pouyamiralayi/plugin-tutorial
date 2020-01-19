@@ -31,13 +31,6 @@ function ComponentCard({
 
   const {state, dispatch} = useContext(ListViewContext);
 
-  useEffect(() => {
-    const perform_delete = get(state, [DELETE_ACTION], false);
-    if (perform_delete) {
-      dispatch({type: REMOVE_COMPONENT_FROM_DYNAMIC_ZONE, payload: {dzName, index}});
-      dispatch({type: PERFORM_DELETE_ACTION, payload: false})
-    }
-  }, [state]);
 
   const {schema: {icon, name}} = get(state, [COMPONENTS, component], {schema: {icon: null}});
 
@@ -51,7 +44,7 @@ function ComponentCard({
         className="close-btn"
         onClick={e => {
           e.stopPropagation();
-          dispatch({type: TOGGLE_DELETE_MODAL, payload: true});
+          dispatch({type: REMOVE_COMPONENT_FROM_DYNAMIC_ZONE, payload: {dzName, index}});
         }}
       >
         <Close width="7px" height="7px"/>
@@ -68,7 +61,7 @@ ComponentCard.defaultProps = {
 };
 
 ComponentCard.propTypes = {
-  component: PropTypes.object,
+  component: PropTypes.string,
   dzName: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   isActive: PropTypes.bool,
