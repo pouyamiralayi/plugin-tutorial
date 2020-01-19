@@ -3,7 +3,7 @@ import {
   ADD_COMPONENT,
   ATTRIBUTES,
   ATTRIBUTES_ARRAY,
-  COMPONENTS,
+  COMPONENTS, EDIT_ATTRIBUTE,
   LOADING,
   MODELS,
   SET_ATTRIBUTES,
@@ -45,9 +45,8 @@ export const reducer = (state, action) => {
         const newState = {...state};
         set(newState, [COMPONENTS, comp.uid], comp);
         return newState
-      } else {
-        return state
       }
+      return state
     }
     case SET_COMPONENTS: {
       const comps = action.payload;
@@ -55,9 +54,8 @@ export const reducer = (state, action) => {
         const newState = {...state};
         set(newState, [COMPONENTS], comps);
         return newState
-      } else {
-        return state
       }
+      return state
     }
     case SET_MODELS: {
       const models = action.payload;
@@ -65,9 +63,8 @@ export const reducer = (state, action) => {
         const newState = {...state};
         set(newState, [MODELS], models);
         return newState
-      } else {
-        return state
       }
+      return state
     }
     case SET_ATTRIBUTES: {
       const attrs = action.payload;
@@ -75,9 +72,8 @@ export const reducer = (state, action) => {
         const newState = {...state};
         set(newState, [ATTRIBUTES], attrs);
         return newState
-      } else {
-        return state
       }
+      return state
     }
     case SET_ATTRIBUTES_ARRAY: {
       const attrs = action.payload;
@@ -85,9 +81,17 @@ export const reducer = (state, action) => {
         const newState = {...state};
         set(newState, [ATTRIBUTES_ARRAY], attrs);
         return newState
-      } else {
-        return state
       }
+      return state
+    }
+    case EDIT_ATTRIBUTE: {
+      if (!isEmpty(action.payload)) {
+        const {attributeName, exportName} = action.payload;
+        const newState = {...state};
+        set(newState, [ATTRIBUTES, attributeName, "exportName"], exportName);
+        return newState
+      }
+      return state
     }
     case SET_TARGET: {
       const target = action.payload;
@@ -95,9 +99,8 @@ export const reducer = (state, action) => {
         const newState = {...state};
         set(newState, [TARGET], target);
         return newState
-      } else {
-        return state
       }
+      return state
     }
     case SET_TARGET_UID: {
       const target = action.payload;

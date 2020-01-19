@@ -13,49 +13,16 @@ import Block from "../Block";
 
 class FormModalEdit extends Component {
   state = {
-    prevFieldName: "",
-    fieldName: "",
-    sourceField: "",
-    sourceComp: "",
-    selectedTarget: ""
-  };
-
-  onSelectTarget = (selectedTarget) => {
-    this.setState({selectedTarget})
-  };
-
-  fillOptions = () => {
-    const targetModel = this.props.getTargetModel(this.state.selectedTarget);
-    const schemaAttributes = get(targetModel, ["schema", "attributes"], {});
-    const options = Object.keys(schemaAttributes)
-      .map(fieldName => {
-        const attribute = get(schemaAttributes, [fieldName], {});
-
-        return attribute.type && {label: fieldName, value: fieldName};
-      })
-      .filter(obj => obj !== undefined);
-    return [{label: "None", value: "none"}, ...options];
+    exportName: '',
+    fieldName: '',
   };
 
   setValue = (val) => {
-    this.setState({fieldName: val})
-  };
-
-  onChange = (val) => {
-    if (val == "none") {
-      this.setState({sourceField: ""})
-    } else {
-      this.setState({sourceField: val})
-    }
-  };
-
-  onSave = () => {
-    const {fieldName, sourceField, sourceComp, prevFieldName, selectedTarget} = this.state;
-    this.props.onFormSave({fieldName, sourceField, sourceComp, prevFieldName, selectedTarget})
+    this.setState({exportName: val})
   };
 
   render() {
-    const {sourceField, fieldName, sourceComp} = this.state;
+    const {exportName} = this.state;
     return (
       <Modal
         isOpen={this.props.isOpen}
@@ -80,16 +47,6 @@ class FormModalEdit extends Component {
           <ModalForm>
             <ModalBody>
               <div className={"container-fluid"}>
-                <Row className={"col-4 row"}>
-                  <Label htmlFor={"targetContentType"}>Select Content Type</Label>
-                  <Select
-                    name={"targetContentType"}
-                    options={this.props.modelOptions}
-                    value={this.state.selectedTarget}
-                    onChange={({target: {value}}) =>
-                      this.onSelectTarget(value)}
-                  />
-                </Row>
                 <div className={"row"}>
                   <div className={"col-4"}>
                     <Label htmlFor="fieldNames">Field Name</Label>
@@ -100,18 +57,7 @@ class FormModalEdit extends Component {
                       }}
                       placeholder="Field Name"
                       type="text"
-                      value={fieldName}
-                    />
-                  </div>
-                  <div className={"col-4"}>
-                    <Label htmlFor="fieldSource">Source</Label>
-                    <Select
-                      name={"fieldSource"}
-                      options={this.props.fillOptions(this.state.selectedTarget)}
-                      value={sourceField}
-                      onChange={({target: {value}}) =>
-                        this.onChange(value)
-                      }
+                      value={exportName}
                     />
                   </div>
                 </div>
@@ -120,7 +66,7 @@ class FormModalEdit extends Component {
                     style={{marginBottom: 12}}
                     label={"Apply"}
                     onClick={this.onSave}
-                    disabled={sourceField == "" || fieldName == ""}
+                    disabled={exportName == ""}
                   />
                 </Row>
               </div>
@@ -132,13 +78,14 @@ class FormModalEdit extends Component {
   }
 
   onOpen = () => {
-    const fieldToEdit = this.props.fieldToEdit;
-    console.log(fieldToEdit);
-    const {fieldName, selectedTarget} = fieldToEdit;
-    this.setState({...fieldToEdit, prevFieldName: fieldName, selectedTarget}, () => {
-      console.log("initial state: ", this.state)
-    })
-  }
+    const {fieldName, exportName} = this.props.fieldToEdit;
+    this.setState({exportName: exportName || fieldName, fieldName})
+  };
+
+  onSave = () => {
+    const {exportName, fieldName} = this.state;
+    this.props.onFormSave({attributeName: fieldName, exportName})
+  };
 }
 
 FormModalEdit.propTypes = {
@@ -146,9 +93,9 @@ FormModalEdit.propTypes = {
   onFormSave: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
-  fieldToEdit: PropTypes.object.isRequired,
-  modelOptions: PropTypes.array.isRequired,
-  fillOptions: PropTypes.func.isRequired
+  fieldToEdit: PropTypes.string.isRequired,
+  modelOptions: PropTypes.array,
+  fillOptions: PropTypes.func
 };
 
 export default FormModalEdit

@@ -48,12 +48,13 @@ const ExportData = () => {
       }
     });
     updateModelOptions(modelOptions);
-  }, [get(state, [MODELS], [])]);
+  }, [state]);
 
   /*3.set targetModel to the first option*/
   useEffect(() => {
-    if (!isEmpty(get(modelOptions, ["0", "value"], ""))) {
-      updateTargetModelName(modelOptions[0].value);
+    const opt = get(modelOptions, ["0", "value"], "");
+    if (!isEmpty(opt)) {
+      updateTargetModelName(opt);
     }
   }, [modelOptions]);
 
@@ -64,11 +65,10 @@ const ExportData = () => {
     const target = models.find(model => model.uid === targetModelName);
     target && dispatch({type: SET_TARGET, payload: target});
     const attrs = target && get(target, ['schema', 'attributes'], {});
-    const attrs_array = attrs && convertAttrObjToArray(attrs); // todo move this to sub-components state
     attrs && dispatch({type: SET_ATTRIBUTES, payload: attrs});
-    attrs_array && dispatch({type: SET_ATTRIBUTES_ARRAY, payload: attrs_array})
+    // const attrs_array = attrs && convertAttrObjToArray(attrs); // todo move this to sub-components state
+    // attrs_array && dispatch({type: SET_ATTRIBUTES_ARRAY, payload: attrs_array})
   }, [targetModelName]);
-
 
   const onSelectTarget = (targetModel) => {
     updateTargetModelName(targetModel)
@@ -96,33 +96,33 @@ const ExportData = () => {
   };
 
   return (
-    <Block
-      title="General"
-      description="Export your Content Types"
-      style={{marginBottom: 12}}
-    >
-      {
-        get(state, [LOADING], false) ? (
-          <LoadingIndicator/>
-        ) : (
-          <>
-            <Row className={"col-4 row"}>
-              <Label htmlFor={"targetContentType"}>Select Content Type</Label>
-              <Select
-                name={"targetContentType"}
-                options={modelOptions}
-                value={targetModelName}
-                onChange={({target: {value}}) =>
-                  onSelectTarget(value)}
-              />
-            </Row>
-            < ListViewContext.Provider value={{state, dispatch}}>
-              <ContentTypeTree/>
-            </ListViewContext.Provider>
-          </>
-        )
-      }
-    </Block>
+          <Block
+            title="General"
+            description="Export your Content Types"
+            style={{marginBottom: 12}}
+          >
+            {
+              get(state, [LOADING], false) ? (
+                <LoadingIndicator/>
+              ) : (
+                <>
+                  <Row className={"col-4 row"}>
+                    <Label htmlFor={"targetContentType"}>Select Content Type</Label>
+                    <Select
+                      name={"targetContentType"}
+                      options={modelOptions}
+                      value={targetModelName}
+                      onChange={({target: {value}}) =>
+                        onSelectTarget(value)}
+                    />
+                  </Row>
+                  < ListViewContext.Provider value={{state, dispatch}}>
+                    <ContentTypeTree/>
+                  </ListViewContext.Provider>
+                </>
+              )
+            }
+          </Block>
   )
 };
 

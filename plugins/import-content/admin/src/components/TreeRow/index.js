@@ -15,11 +15,8 @@ import {MODELS} from "../../utils/constants";
 
 // import {onClickDelete} from "../../../../../../.cache/plugins/strapi-plugin-users-permissions/admin/src/containers/EditPage/actions";
 
-function TreeRow({name, type, target}) {
-  // console.log(item);
+function TreeRow({name, type, target, onClick, exportName}) {
   const {state, dispatch} = useContext(ListViewContext);
-  // const {type, name, target} = item;
-  // const {type, name, target} = {name: 'name', type: 'type', target: 'target'};
   const [ico, updateIco] = useState("");
   const [readableType, updateReadableType] = useState("");
   const [contentTypeFriendlyName, updateContentTypeFriendlyName] = useState("");
@@ -36,8 +33,7 @@ function TreeRow({name, type, target}) {
       updateReadableType('number')
     } else if (['string'].includes(type)) {
       updateReadableType('text')
-    }
-    else {
+    } else {
       updateReadableType(type)
     }
   }, [type]);
@@ -53,37 +49,36 @@ function TreeRow({name, type, target}) {
 
   const repeatable = null;
 
-  // const handleClick = () => {
-  //   if (configurable !== false) {
-  //     const attrType = nature ? 'relation' : type;
-  //     let headerDisplayName = mainTypeName;
-  //
-  //     if (firstLoopComponentName) {
-  //       headerDisplayName = firstLoopComponentName;
-  //     }
-  //
-  //     if (secondLoopComponentUid) {
-  //       headerDisplayName = secondLoopComponentName;
-  //     }
-  //
-  //     onClick(
-  //       exportName,
-  //       // Tells where the attribute is located in the main modifiedData object : contentType, component or components
-  //       editTarget,
-  //       // main data type uid
-  //       secondLoopComponentUid || firstLoopComponentUid || targetUid,
-  //       // Name of the attribute
-  //       name,
-  //       mainTypeName,
-  //       // Type of the attribute
-  //       attrType,
-  //       headerDisplayName,
-  //       firstLoopComponentUid ? mainTypeName : null,
-  //       secondLoopComponentName ? firstLoopComponentName : null,
-  //       secondLoopComponentUid ? firstLoopComponentUid : null
-  //     );
-  //   }
-  // };
+  const handleClick = () => {
+    // const attrType = nature ? 'relation' : type;
+    // let headerDisplayName = mainTypeName;
+
+    // if (firstLoopComponentName) {
+    //   headerDisplayName = firstLoopComponentName;
+    // }
+
+    // if (secondLoopComponentUid) {
+    //   headerDisplayName = secondLoopComponentName;
+    // }
+
+    onClick(
+      name,
+      exportName,
+      // Tells where the attribute is located in the main modifiedData object : contentType, component or components
+      // editTarget,
+      // main data type uid
+      // secondLoopComponentUid || firstLoopComponentUid || targetUid,
+      // Name of the attribute
+      // name,
+      // mainTypeName,
+      // Type of the attribute
+      // attrType,
+      // headerDisplayName,
+      // firstLoopComponentUid ? mainTypeName : null,
+      // secondLoopComponentName ? firstLoopComponentName : null,
+      // secondLoopComponentUid ? firstLoopComponentUid : null
+    );
+  };
   // let loopNumber;
 
   // if (secondLoopComponentUid && firstLoopComponentUid) {
@@ -110,7 +105,8 @@ function TreeRow({name, type, target}) {
         <Curve fill={'#f3f4f4'}/>
       </td>
       <td style={{fontWeight: 600}}>
-        <p>{name}</p>
+        <p>{name} &nbsp; {exportName && exportName != name && (
+          <span><FontAwesomeIcon className={"link-icon"} icon={"long-arrow-alt-right"}/> &nbsp; {exportName}</span>)}</p>
       </td>
       <td>
         {target ? (
@@ -142,8 +138,7 @@ function TreeRow({name, type, target}) {
       <td className="button-container">
         <>
           <>
-            {/*<button type="button" onClick={handleClick}>*/}
-            <button type="button">
+            <button type="button" onClick={handleClick}>
               <FontAwesomeIcon className="link-icon" icon="pencil-alt"/>
             </button>
             <button
@@ -174,8 +169,8 @@ TreeRow.defaultProps = {
   // firstLoopComponentUid: null,
   // isFromDynamicZone: false,
   // nature: null,
-  // onClick: () => {
-  // },
+  onClick: () => {
+  },
   // onClickDelete: () => {
   // },
   // plugin: null,
@@ -185,6 +180,7 @@ TreeRow.defaultProps = {
   target: null,
   // targetUid: null,
   type: null,
+  exportName: null,
   // targetModel: {},
 };
 
@@ -198,7 +194,7 @@ TreeRow.propTypes = {
   // mainTypeName: PropTypes.string.isRequired,
   name: PropTypes.string,
   // nature: PropTypes.string,
-  // onClick: PropTypes.func,
+  onClick: PropTypes.func,
   // plugin: PropTypes.string,
   // repeatable: PropTypes.bool,
   // secondLoopComponentName: PropTypes.string,
@@ -207,7 +203,7 @@ TreeRow.propTypes = {
   // targetUid: PropTypes.string,
   type: PropTypes.string,
   // targetModel: PropTypes.object,
-  // exportName: PropTypes.string,
+  exportName: PropTypes.string,
   // onClickDelete: PropTypes.func
 };
 
