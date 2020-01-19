@@ -24,6 +24,7 @@ import getTrad from "../../utils/getTrad";
 const ContentTypeTree = () => {
   const {emitEvent, formatMessage} = useGlobalContext();
   const {state, dispatch} = useContext(ListViewContext);
+  const [attrsArray, updateAttrsArray] = useState([]);
   const [attributesLength, updateAttributesLength] = useState(0);
   const [listTitle, updateListTitle] = useState([]);
   const [showDeleteModal, toggleShowDeleteModal] = useState(false);
@@ -36,6 +37,7 @@ const ContentTypeTree = () => {
 
   useEffect(() => {
     const attributesArray = convertAttrObjToArray(get(state, [ATTRIBUTES], {}));
+    updateAttrsArray(attributesArray);
     const attributesLength = attributesArray.length;
     updateAttributesLength(attributesLength)
   }, [state]);
@@ -119,6 +121,7 @@ const ContentTypeTree = () => {
                 fieldToEdit={fieldToEdit}
               />
               <ContentTypeList
+                items={attrsArray}
                 customRowComponent={props => <CustomRow {...props} />}
                 editTarget={'contentType'}
                 targetUid={targetUid}

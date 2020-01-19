@@ -98,7 +98,8 @@ export const reducer = (state, action) => {
           const newKeys = keys(get(state, [COMPONENTS, targetUid, SCHEMA, ATTRIBUTES], {}))
             .filter(k => k != attributeName);
           const newAttrs = pick(get(state, [COMPONENTS, targetUid, SCHEMA, ATTRIBUTES], {}), newKeys);
-          set(newState, [COMPONENTS, targetUid, SCHEMA, ATTRIBUTES], newAttrs);
+          set(newState, [COMPONENTS, targetUid, SCHEMA, ATTRIBUTES], newAttrs || {});
+          console.log(newState);
           return newState
         }
         return state

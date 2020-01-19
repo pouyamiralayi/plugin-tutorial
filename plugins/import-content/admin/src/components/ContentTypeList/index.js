@@ -25,14 +25,14 @@ const ContentTypeList = ({
   // const targetName = get(state, [TARGET, 'schema', 'name'], "");
 
   useEffect(() => {
-    if (isEmpty(items)) {
-      const attrs = get(state, [ATTRIBUTES], {});
-      const attributesArray = convertAttrObjToArray(attrs);
-      updateAttributesArray(attributesArray);
-      // console.log("attrs", attrArray)
-    } else {
-      updateAttributesArray(items)
-    }
+    // if (isEmpty(items)) {
+    //   const attrs = get(state, [ATTRIBUTES], {});
+    //   const attributesArray = convertAttrObjToArray(attrs) || [];
+    //   updateAttributesArray(attributesArray);
+    //   // console.log("attrs", attrArray)
+    // } else {
+    updateAttributesArray(items)
+    // }
   }, [state, items]);
 
   return (
