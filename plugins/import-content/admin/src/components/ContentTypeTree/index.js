@@ -1,8 +1,15 @@
 import React, {useContext, useEffect, useState} from 'react';
 import ListViewContext from "../../utils/ListViewContext";
-import {ATTRIBUTES, ATTRIBUTES_ARRAY, EDIT_ATTRIBUTE, TARGET} from "../../utils/constants";
+import {
+  ATTRIBUTES,
+  ATTRIBUTES_ARRAY,
+  EDIT_ATTRIBUTE,
+  PERFORM_DELETE_ACTION, SHOW_DELETE_MODAL,
+  TARGET,
+  TOGGLE_DELETE_MODAL
+} from "../../utils/constants";
 import {get, has, omit} from 'lodash'
-import {ListWrapper, useGlobalContext} from 'strapi-helper-plugin'
+import {ListWrapper, useGlobalContext, PopUpWarning} from 'strapi-helper-plugin'
 import Wrapper from '../ListView/Wrapper'
 import ListHeader from "../ListHeader";
 import pluginId from "../../pluginId";
@@ -18,6 +25,7 @@ const ContentTypeTree = () => {
   const {state, dispatch} = useContext(ListViewContext);
   const [attributesLength, updateAttributesLength] = useState(0);
   const [listTitle, updateListTitle] = useState([]);
+  const [showDeleteModal, toggleShowDeleteModal] = useState(false);
   const [showEditModal, toggleShowEditModal] = useState(false);
   const [fieldToEdit, updateFieldToEdit] = useState({});
 
@@ -28,6 +36,11 @@ const ContentTypeTree = () => {
     const attributesArray = convertAttrObjToArray(get(state, [ATTRIBUTES], {}));
     const attributesLength = attributesArray.length;
     updateAttributesLength(attributesLength)
+  }, [state]);
+
+  useEffect(() => {
+    const showDeleteModal = get(state, [SHOW_DELETE_MODAL], false)
+    toggleShowDeleteModal(showDeleteModal)
   }, [state]);
 
   useEffect(() => {
@@ -74,6 +87,18 @@ const ContentTypeTree = () => {
             {/*<Header {...headerProps} />*/}
             <ListWrapper style={{marginBottom: 80}}>
               <ListHeader title={listTitle}/>
+              <PopUpWarning
+                isOpen={showDeleteModal}
+                toggleModal={() => dispatch({type: TOGGLE_DELETE_MODAL, payload: false})}
+                content={{
+                  title: `Please confirm`,
+                  message: `Are you sure you want to Delete this Component?`
+                }}
+                popUpWarningType="danger"
+                onConfirm={async () => {
+                  dispatch({type: PERFORM_DELETE_ACTION, payload: true})
+                }}
+              />
               <FormModalEdit
                 isOpen={showEditModal}
                 onFormSave={onFormEdit}

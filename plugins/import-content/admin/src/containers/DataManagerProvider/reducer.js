@@ -3,19 +3,19 @@ import {
   ADD_COMPONENT,
   ATTRIBUTES,
   ATTRIBUTES_ARRAY,
-  COMPONENTS, EDIT_ATTRIBUTE, EXPORT_NAME,
+  COMPONENTS, DELETE_ACTION, EDIT_ATTRIBUTE, EXPORT_NAME,
   LOADING,
-  MODELS, SCHEMA,
+  MODELS, PERFORM_DELETE_ACTION, REMOVE_COMPONENT_FROM_DYNAMIC_ZONE, SCHEMA,
   SET_ATTRIBUTES,
   SET_ATTRIBUTES_ARRAY,
   SET_COMPONENTS,
   SET_MODELS,
   SET_TARGET,
   SET_TARGET_NAME,
-  SET_TARGET_UID,
+  SET_TARGET_UID, SHOW_DELETE_MODAL,
   TARGET,
   TARGET_NAME,
-  TARGET_UID,
+  TARGET_UID, TOGGLE_DELETE_MODAL,
   TOGGLE_LOADING
 } from "../../utils/constants";
 
@@ -33,6 +33,8 @@ export const store = {
   initialData: {},
   modifiedData: {},
   [LOADING]: true,
+  [SHOW_DELETE_MODAL]: false,
+  [DELETE_ACTION]: false,
   isLoadingForDataToBeSet: true,
 };
 
@@ -128,6 +130,34 @@ export const reducer = (state, action) => {
     }
     case TOGGLE_LOADING: {
       return {...state, [LOADING]: action.payload}
+    }
+    case REMOVE_COMPONENT_FROM_DYNAMIC_ZONE: {
+      if (!isEmpty(action.payload)) {
+        const {dzname: dzName, idx} = action.payload;
+        const newState = {...state};
+        const comps = get(state, [ATTRIBUTES, dzName, COMPONENTS], [])
+          .filter((cmp, i) => i != idx
+          );
+        set(newState, [ATTRIBUTES, dzName, COMPONENTS], comps);
+        return newState
+      }
+      return state
+    }
+    case TOGGLE_DELETE_MODAL: {
+      if (!isEmpty(action.payload)) {
+        const newState = {...state};
+        set(newState, [SHOW_DELETE_MODAL], action.payload);
+        return newState
+      }
+      return state
+    }
+    case PERFORM_DELETE_ACTION: {
+      if (!isEmpty(action.payload)) {
+        const newState = {...state};
+        set(newState, [DELETE_ACTION], action.payload);
+        return newState
+      }
+      return state
     }
     default:
       return state
