@@ -30,6 +30,7 @@ class FormModalEdit extends Component {
         onToggle={this.props.onToggle}
         onOpened={this.onOpen}
       >
+        {/*todo header & footer*/}
         {/*<HeaderModal>*/}
         {/*  <ModalHeader*/}
         {/*    name={"Add new Field"}*/}
@@ -83,6 +84,7 @@ class FormModalEdit extends Component {
   };
 
   onSave = () => {
+    /*todo validation (no space!)*/
     const {exportName, fieldName} = this.state;
     this.props.onFormSave({attributeName: fieldName, exportName})
   };
