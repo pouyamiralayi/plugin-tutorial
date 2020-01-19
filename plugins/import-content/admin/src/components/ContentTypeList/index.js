@@ -11,18 +11,23 @@ const ContentTypeList = ({
                            isFromDynamicZone,
                            customRowComponent,
                            items,
+                           editTarget,
+                           targetUid,
+                           targetName,
                          }) => {
   const {state, dispatch} = useContext(ListViewContext);
   const [attrArray, updateAttributesArray] = useState([]);
-  const targetUid = get(state, [TARGET, 'uid'], "");
-  const targetName = get(state, [TARGET, 'schema', 'name'], "");
+
+  //todo check if this is required or not?
+  // const targetUid = get(state, [TARGET, 'uid'], "");
+  // const targetName = get(state, [TARGET, 'schema', 'name'], "");
 
   useEffect(() => {
     if (isEmpty(items)) {
       const attrs = get(state, [ATTRIBUTES], {});
       const attributesArray = convertAttrObjToArray(attrs);
       updateAttributesArray(attributesArray);
-      console.log("attrs", attrArray)
+      // console.log("attrs", attrArray)
     } else {
       updateAttributesArray(items)
     }
@@ -42,11 +47,17 @@ const ContentTypeList = ({
               <React.Fragment key={item.name}>
                 <CustomRow
                   {...item}
+                  targetUid={targetUid}
+                  targetName={targetName}
+                  editTarget={editTarget}
                 />
                 {type === 'component' && (
                   <ComponentTree
                     component={component}
                     customRowComponent={customRowComponent}
+                    targetUid={targetUid}
+                    targetName={targetName}
+                    editTarget={editTarget}
                   />
                 )}
               </React.Fragment>
@@ -71,6 +82,10 @@ ContentTypeList.propTypes = {
   component: PropTypes.string,
   customRowComponent: PropTypes.func,
   items: PropTypes.instanceOf(Array),
+  editTarget: PropTypes.string,
+  targetUid: PropTypes.string,
+  targetName: PropTypes.string,
+
 };
 
 export default ContentTypeList

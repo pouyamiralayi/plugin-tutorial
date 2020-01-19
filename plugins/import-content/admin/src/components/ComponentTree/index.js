@@ -8,16 +8,25 @@ import convertAttrObjToArray from "../../utils/convertAttrObjToArray";
 import ContentTypeList from "../ContentTypeList";
 import Td from "../Td";
 
-const ComponentTree = ({isFromDynamicZone, customRowComponent, component}) => {
+const ComponentTree = ({
+                         isFromDynamicZone,
+                         customRowComponent,
+                         component,
+                         editTarget,
+                         targetUid,
+                         targetName
+                       }) => {
   const {state, dispatch} = useContext(ListViewContext);
   const [componentName, updateComponentName] = useState("");
   const [attrsArray, updateAttrsArray] = useState([]);
 
   useEffect(() => {
     const {schema: {name: componentName, attributes}} = get(state, [COMPONENTS, component], {schema: {attributes: {}}});
-    updateAttrsArray(convertAttrObjToArray(attributes));
+    const attrArray = convertAttrObjToArray(attributes);
+    updateAttrsArray(attrArray);
+    console.log(attrArray);
     updateComponentName(componentName)
-  }, [component]);
+  }, [component, state]);
 
   return (
     <tr className="component-row">
@@ -26,6 +35,9 @@ const ComponentTree = ({isFromDynamicZone, customRowComponent, component}) => {
           items={attrsArray}
           customRowComponent={customRowComponent}
           isFromDynamicZone={isFromDynamicZone}
+          editTarget={"components"}
+          targetUid={component}
+          targetName={targetName}
         />
       </Td>
     </tr>
@@ -42,6 +54,9 @@ ComponentTree.propTypes = {
   isFromDynamicZone: PropTypes.bool,
   component: PropTypes.string,
   customRowComponent: PropTypes.func,
+  editTarget: PropTypes.string,
+  targetUid: PropTypes.string,
+  targetName: PropTypes.string,
 
 };
 

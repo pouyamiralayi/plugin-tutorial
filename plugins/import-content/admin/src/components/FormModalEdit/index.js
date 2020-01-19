@@ -95,7 +95,7 @@ FormModalEdit.propTypes = {
   onFormSave: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
-  fieldToEdit: PropTypes.string.isRequired,
+  fieldToEdit: PropTypes.object.isRequired,
   modelOptions: PropTypes.array,
   fillOptions: PropTypes.func
 };

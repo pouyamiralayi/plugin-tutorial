@@ -3,9 +3,9 @@ import {
   ADD_COMPONENT,
   ATTRIBUTES,
   ATTRIBUTES_ARRAY,
-  COMPONENTS, EDIT_ATTRIBUTE,
+  COMPONENTS, EDIT_ATTRIBUTE, EXPORT_NAME,
   LOADING,
-  MODELS,
+  MODELS, SCHEMA,
   SET_ATTRIBUTES,
   SET_ATTRIBUTES_ARRAY,
   SET_COMPONENTS,
@@ -86,9 +86,13 @@ export const reducer = (state, action) => {
     }
     case EDIT_ATTRIBUTE: {
       if (!isEmpty(action.payload)) {
-        const {attributeName, exportName} = action.payload;
+        const {attributeName, exportName, editTarget, targetUid, targetName} = action.payload;
         const newState = {...state};
-        set(newState, [ATTRIBUTES, attributeName, "exportName"], exportName);
+        if (editTarget === 'contentType') {
+          set(newState, [ATTRIBUTES, attributeName, EXPORT_NAME], exportName);
+        } else if (editTarget === COMPONENTS) {
+          set(newState, [COMPONENTS, targetUid, SCHEMA, ATTRIBUTES, attributeName, EXPORT_NAME], exportName)
+        }
         return newState
       }
       return state

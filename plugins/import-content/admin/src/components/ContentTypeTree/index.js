@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import ListViewContext from "../../utils/ListViewContext";
-import {ATTRIBUTES, ATTRIBUTES_ARRAY, EDIT_ATTRIBUTE} from "../../utils/constants";
+import {ATTRIBUTES, ATTRIBUTES_ARRAY, EDIT_ATTRIBUTE, TARGET} from "../../utils/constants";
 import {get, has, omit} from 'lodash'
 import {ListWrapper, useGlobalContext} from 'strapi-helper-plugin'
 import Wrapper from '../ListView/Wrapper'
@@ -21,6 +21,9 @@ const ContentTypeTree = () => {
   const [showEditModal, toggleShowEditModal] = useState(false);
   const [fieldToEdit, updateFieldToEdit] = useState({});
 
+  const targetUid = get(state, [TARGET, 'uid'], "");
+  const targetName = get(state, [TARGET, 'schema', 'name'], "");
+
   useEffect(() => {
     const attributesArray = convertAttrObjToArray(get(state, [ATTRIBUTES], {}));
     const attributesLength = attributesArray.length;
@@ -40,13 +43,14 @@ const ContentTypeTree = () => {
   }, [attributesLength]);
 
   const onFormEdit = (val) => {
-    // console.log(val);
-    dispatch({type: EDIT_ATTRIBUTE, payload: val});
+    const {editTarget, targetUid, targetName} = fieldToEdit;
+    dispatch({type: EDIT_ATTRIBUTE, payload: {...val, editTarget, targetUid, targetName}});
     toggleShowEditModal(false)
   };
 
-  const showEdit = (fieldName, exportName) => {
-    updateFieldToEdit({fieldName, exportName});
+  const showEdit = (fieldName, exportName, targetUid, targetName, editTarget) => {
+    // console.log({fieldName, exportName, targetUid, targetName,editTarget});
+    updateFieldToEdit({fieldName, exportName, targetUid, editTarget, targetName});
     toggleShowEditModal(true)
   };
 
@@ -79,6 +83,9 @@ const ContentTypeTree = () => {
               />
               <ContentTypeList
                 customRowComponent={props => <CustomRow {...props} />}
+                editTarget={'contentType'}
+                targetUid={targetUid}
+                targetName={targetName}
               />
             </ListWrapper>
           </div>

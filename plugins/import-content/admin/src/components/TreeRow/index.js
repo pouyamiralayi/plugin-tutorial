@@ -15,7 +15,7 @@ import {MODELS} from "../../utils/constants";
 
 // import {onClickDelete} from "../../../../../../.cache/plugins/strapi-plugin-users-permissions/admin/src/containers/EditPage/actions";
 
-function TreeRow({name, type, target, onClick, exportName}) {
+function TreeRow({name, type, target, onClick, exportName, targetUid, targetName, editTarget}) {
   const {state, dispatch} = useContext(ListViewContext);
   const [ico, updateIco] = useState("");
   const [readableType, updateReadableType] = useState("");
@@ -64,6 +64,9 @@ function TreeRow({name, type, target, onClick, exportName}) {
     onClick(
       name,
       exportName,
+      targetUid,
+      targetName,
+      editTarget,
       // Tells where the attribute is located in the main modifiedData object : contentType, component or components
       // editTarget,
       // main data type uid
@@ -127,7 +130,7 @@ function TreeRow({name, type, target, onClick, exportName}) {
           </div>
         ) : (
           <>
-            <FormattedMessage id={`${pluginId}.attribute.${readableType}`}/>
+            <FormattedMessage id={readableType ? `${pluginId}.attribute.${readableType}` : `${pluginId}.from`}/>
             &nbsp;
             {repeatable && (
               <FormattedMessage id={getTrad('component.repeatable')}/>
@@ -178,7 +181,8 @@ TreeRow.defaultProps = {
   // secondLoopComponentName: null,
   // secondLoopComponentUid: null,
   target: null,
-  // targetUid: null,
+  targetUid: null,
+  targetName: null,
   type: null,
   exportName: null,
   // targetModel: {},
@@ -187,7 +191,7 @@ TreeRow.defaultProps = {
 TreeRow.propTypes = {
   // item: PropTypes.object
   // configurable: PropTypes.bool,
-  // editTarget: PropTypes.string.isRequired,
+  editTarget: PropTypes.string.isRequired,
   // firstLoopComponentName: PropTypes.string,
   // firstLoopComponentUid: PropTypes.string,
   // isFromDynamicZone: PropTypes.bool,
@@ -200,7 +204,8 @@ TreeRow.propTypes = {
   // secondLoopComponentName: PropTypes.string,
   // secondLoopComponentUid: PropTypes.string,
   target: PropTypes.string,
-  // targetUid: PropTypes.string,
+  targetUid: PropTypes.string,
+  targetName: PropTypes.string,
   type: PropTypes.string,
   // targetModel: PropTypes.object,
   exportName: PropTypes.string,
