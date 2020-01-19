@@ -19,6 +19,7 @@ import PropTypes from "prop-types";
 import TreeRow from "../TreeRow";
 import FormModalEdit from "../FormModalEdit";
 import convertAttrObjToArray from "../../utils/convertAttrObjToArray";
+import getTrad from "../../utils/getTrad";
 
 const ContentTypeTree = () => {
   const {emitEvent, formatMessage} = useGlobalContext();
@@ -40,7 +41,7 @@ const ContentTypeTree = () => {
   }, [state]);
 
   useEffect(() => {
-    const showDeleteModal = get(state, [SHOW_DELETE_MODAL], false)
+    const showDeleteModal = get(state, [SHOW_DELETE_MODAL], false);
     toggleShowDeleteModal(showDeleteModal)
   }, [state]);
 
@@ -70,8 +71,8 @@ const ContentTypeTree = () => {
   };
 
   const showDelete = (fieldName, exportName, targetUid, targetName, editTarget) => {
-    // console.log({fieldName, exportName, targetUid, targetName,editTarget});
-    updateFieldToDelete({fieldName, exportName, targetUid, editTarget, targetName});
+    console.log({fieldName, exportName, targetUid, targetName, editTarget});
+    updateFieldToDelete({attributeName: fieldName, exportName, targetUid, editTarget, targetName});
     toggleShowDeleteModal(true)
   };
 
@@ -81,6 +82,7 @@ const ContentTypeTree = () => {
       <TreeRow
         {...props}
         onClick={showEdit}
+        onClickDelete={showDelete}
       />
     );
   };
@@ -98,14 +100,15 @@ const ContentTypeTree = () => {
               <ListHeader title={listTitle}/>
               <PopUpWarning
                 isOpen={showDeleteModal}
-                toggleModal={() => dispatch({type: TOGGLE_DELETE_MODAL, payload: false})}
+                toggleModal={() => toggleShowDeleteModal(false)}
                 content={{
-                  title: `Please confirm`,
-                  message: `Are you sure you want to Delete this Component?`
+                  title: getTrad('popUpWarning.bodyMessage.attribute.confirm'),
+                  message: getTrad('popUpWarning.bodyMessage.attribute.delete')
                 }}
                 popUpWarningType="danger"
-                onConfirm={async () => {
-                  dispatch({type: REMOVE_ATTRIBUTE, payload: fieldToDelete})
+                onConfirm={() => {
+                  dispatch({type: REMOVE_ATTRIBUTE, payload: fieldToDelete});
+                  toggleShowDeleteModal(false)
                 }}
               />
               <FormModalEdit

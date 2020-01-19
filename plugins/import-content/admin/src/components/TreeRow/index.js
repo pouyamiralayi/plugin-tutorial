@@ -15,7 +15,7 @@ import {MODELS} from "../../utils/constants";
 
 // import {onClickDelete} from "../../../../../../.cache/plugins/strapi-plugin-users-permissions/admin/src/containers/EditPage/actions";
 
-function TreeRow({name, type, target, onClick, exportName, targetUid, targetName, editTarget}) {
+function TreeRow({name, type, target, onClick, onClickDelete, exportName, targetUid, targetName, editTarget}) {
   const {state, dispatch} = useContext(ListViewContext);
   const [ico, updateIco] = useState("");
   const [readableType, updateReadableType] = useState("");
@@ -109,7 +109,8 @@ function TreeRow({name, type, target, onClick, exportName, targetUid, targetName
       </td>
       <td style={{fontWeight: 600}}>
         <p>{name} &nbsp; {exportName && exportName != name && (
-          <span><FontAwesomeIcon className={"link-icon"} icon={"long-arrow-alt-right"}/> &nbsp; {exportName}</span>)}</p>
+          <span><FontAwesomeIcon className={"link-icon"}
+                                 icon={"long-arrow-alt-right"}/> &nbsp; {exportName}</span>)}</p>
       </td>
       <td>
         {target ? (
@@ -146,16 +147,16 @@ function TreeRow({name, type, target, onClick, exportName, targetUid, targetName
             </button>
             <button
               type="button"
-              // onClick={e => {
-              //   e.stopPropagation();
-
-              // removeAttribute(
-              //   editTarget,
-              //   name,
-              //   secondLoopComponentUid || firstLoopComponentUid || ''
-              // );
-              //   onClickDelete(isFromDynamicZone ? `dz ${editTarget}` : editTarget, name, secondLoopComponentUid || firstLoopComponentUid || '')
-              // }}
+              onClick={e => {
+                  e.stopPropagation();
+                // removeAttribute(
+                //   editTarget,
+                //   name,
+                //   secondLoopComponentUid || firstLoopComponentUid || ''
+                // );
+                //   onClickDelete(isFromDynamicZone ? `dz ${editTarget}` : editTarget, name, secondLoopComponentUid || firstLoopComponentUid || '')
+                onClickDelete(name, exportName, targetUid, targetName, editTarget)
+              }}
             >
               <FontAwesomeIcon className="link-icon" icon="trash"/>
             </button>
@@ -174,8 +175,8 @@ TreeRow.defaultProps = {
   // nature: null,
   onClick: () => {
   },
-  // onClickDelete: () => {
-  // },
+  onClickDelete: () => {
+  },
   // plugin: null,
   // repeatable: false,
   // secondLoopComponentName: null,
@@ -199,6 +200,7 @@ TreeRow.propTypes = {
   name: PropTypes.string,
   // nature: PropTypes.string,
   onClick: PropTypes.func,
+  onClickDelete: PropTypes.func,
   // plugin: PropTypes.string,
   // repeatable: PropTypes.bool,
   // secondLoopComponentName: PropTypes.string,
@@ -209,7 +211,6 @@ TreeRow.propTypes = {
   type: PropTypes.string,
   // targetModel: PropTypes.object,
   exportName: PropTypes.string,
-  // onClickDelete: PropTypes.func
 };
 
 export default TreeRow
