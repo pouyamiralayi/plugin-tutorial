@@ -4,7 +4,7 @@
  *
  */
 
-import React from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {get} from 'lodash';
 import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -12,23 +12,20 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 // import useDataManager from '../../hooks/useDataManager';
 import Wrapper from './Wrapper';
 import Close from './Close';
+import ListViewContext from "../../utils/ListViewContext";
+import {COMPONENTS} from "../../utils/constants";
 
 function ComponentCard({
                          component,
-                         removeComponent, // NEW!
                          dzName,
                          index,
                          isActive,
-                         isInDevelopmentMode,
+                         removeComponent, // NEW!
                          onClick,
                        }) {
-  // const {modifiedData, removeComponentFromDynamicZone} = useDataManager();
-  const {
-    schema: {icon, name},
-  } = component;
-  // } = get(comp, ['components', component], {
-  //   schema: {icon: null},
-  // });
+
+  const {state, dispatch} = useContext(ListViewContext);
+ const {schema: {icon, name}} =  get(state, [COMPONENTS, component], {schema: { icon: null }});
 
   return (
     <Wrapper onClick={onClick} className={isActive ? 'active' : ''}>
@@ -40,10 +37,11 @@ function ComponentCard({
         className="close-btn"
         onClick={e => {
           e.stopPropagation();
-          removeComponent(dzName, index);
+          /*todo figure out something!*/
+          // removeComponent(dzName, index);
         }}
       >
-        {isInDevelopmentMode && <Close width="7px" height="7px"/>}
+        <Close width="7px" height="7px"/>
       </div>
     </Wrapper>
   );
@@ -52,10 +50,8 @@ function ComponentCard({
 ComponentCard.defaultProps = {
   component: {},
   isActive: false,
-  isInDevelopmentMode: false,
   onClick: () => {
   },
-  comp: {}
 };
 
 ComponentCard.propTypes = {
@@ -63,7 +59,6 @@ ComponentCard.propTypes = {
   dzName: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   isActive: PropTypes.bool,
-  isInDevelopmentMode: PropTypes.bool,
   onClick: PropTypes.func,
   removeComponent: PropTypes.func
 };

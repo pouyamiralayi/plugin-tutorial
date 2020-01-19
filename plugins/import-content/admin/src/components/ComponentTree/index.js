@@ -1,9 +1,8 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import PropTypes from "prop-types";
 import ListViewContext from "../../utils/ListViewContext";
-import {ATTRIBUTES, ATTRIBUTES_ARRAY, COMPONENTS, TARGET, TARGET_NAME, TARGET_UID} from "../../utils/constants";
+import {COMPONENTS} from "../../utils/constants";
 import {get} from 'lodash'
-import Wrapper from '../List/List'
 import convertAttrObjToArray from "../../utils/convertAttrObjToArray";
 import ContentTypeList from "../ContentTypeList";
 import Td from "../Td";
@@ -12,8 +11,6 @@ const ComponentTree = ({
                          isFromDynamicZone,
                          customRowComponent,
                          component,
-                         editTarget,
-                         targetUid,
                          targetName
                        }) => {
   const {state, dispatch} = useContext(ListViewContext);
@@ -54,8 +51,6 @@ ComponentTree.propTypes = {
   isFromDynamicZone: PropTypes.bool,
   component: PropTypes.string,
   customRowComponent: PropTypes.func,
-  editTarget: PropTypes.string,
-  targetUid: PropTypes.string,
   targetName: PropTypes.string,
 
 };

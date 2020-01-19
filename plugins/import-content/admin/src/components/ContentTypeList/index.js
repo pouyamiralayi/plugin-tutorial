@@ -6,6 +6,8 @@ import {get, isEmpty} from 'lodash'
 import Wrapper from '../List/List'
 import convertAttrObjToArray from "../../utils/convertAttrObjToArray";
 import ComponentTree from "../ComponentTree";
+import DynamicZoneList from "../DynamicZoneList";
+import DynamicZoneTree from "../DynamicZoneTree";
 
 const ContentTypeList = ({
                            isFromDynamicZone,
@@ -55,9 +57,16 @@ const ContentTypeList = ({
                   <ComponentTree
                     component={component}
                     customRowComponent={customRowComponent}
-                    targetUid={targetUid}
                     targetName={targetName}
                     editTarget={editTarget}
+                  />
+                )}
+
+                {type === 'dynamiczone' && (
+                  <DynamicZoneTree
+                    {...item}
+                    customRowComponent={customRowComponent}
+                    targetName={targetName}
                   />
                 )}
               </React.Fragment>
