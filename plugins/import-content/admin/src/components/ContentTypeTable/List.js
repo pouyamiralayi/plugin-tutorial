@@ -15,7 +15,8 @@ const List = styled.ul`
     }
   }
   a {
-    display: block;
+    display: flex;
+    justify-content: space-between;
     padding-left: 30px;
     height: 34px;
     border-radius: 2px;
@@ -39,6 +40,9 @@ const List = styled.ul`
       display: flex;
       justify-content: space-between;
       margin-bottom: 0;
+    }
+    Checkbox {
+       
     }
     &.active {
       background-color: #e9eaeb;
