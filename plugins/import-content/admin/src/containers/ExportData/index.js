@@ -94,6 +94,11 @@ const ExportData = () => {
     });
     dispatch({type: SET_MODELS, payload: models});
     updateModelOptions(modelOptions);
+    const opt = get(modelOptions, ["0", "uid"], "");
+    if (!isEmpty(opt)) {
+      // console.log(opt);
+      updateTargetModelName(opt);
+    }
   };
 
   const onModelChecked = (val) => {
