@@ -13,15 +13,16 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, models, configs, sele
 
     // console.log('modelOptions: ', models);
     const CustomRow = ({label, uid, checked, selected}) => {
-      console.log(label, uid, checked, selected);
+      // console.log(label, uid, checked, selected);
       // const {label, uid, checked, selected} = row;
       return (
         <TableRow
+          selected={selectedOption === uid}
           key={uid}
           onClick={ev => {
             onModelClicked({uid})
           }}
-          className={['clickable',`${selectedOption === uid ? 'clicked' : ''}`]}>
+          className={['clickable']}>
           <a>
             {label} &nbsp;
             <Checkbox
