@@ -90,12 +90,11 @@ const ContentTypeTree = () => {
   };
 
   return (
-    <Wrapper>
-      <div className="container-fluid">
+      <div className="">
         <div className="row">
           {/*<LeftMenu wait={wait}/>*/}
           <div
-            className="col-9 content"
+            className=""
           >
             {/*<Header {...headerProps} />*/}
             <ListWrapper style={{marginBottom: 80}}>
@@ -131,7 +130,6 @@ const ContentTypeTree = () => {
           </div>
         </div>
       </div>
-    </Wrapper>
   )
 };
 

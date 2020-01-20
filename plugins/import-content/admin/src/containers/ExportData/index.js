@@ -1,25 +1,23 @@
 import React, {useEffect, useReducer, useState} from 'react';
 import {reducer, store} from "../DataManagerProvider/reducer";
-import {get, has, isEmpty} from "lodash";
+import {isEmpty, get, has} from "lodash";
 import {
   ATTRIBUTES,
   LOADING,
-  MODELS, SCHEMA,
+  MODELS,
+  SCHEMA,
   SET_ATTRIBUTES,
-  SET_ATTRIBUTES_ARRAY,
   SET_COMPONENTS,
-  SET_MODELS, SET_TARGET,
-  SET_TARGET_NAME,
-  SET_TARGET_UID, TARGET,
+  SET_MODELS,
+  SET_TARGET,
   TOGGLE_LOADING
 } from "../../utils/constants";
 import ListViewContext from "../../utils/ListViewContext";
 import ContentTypeTree from "../../components/ContentTypeTree";
 import {LoadingIndicator, request} from 'strapi-helper-plugin'
 import Block from "../../components/Block";
-import Row from "../../components/Row";
-import {Label, Select} from '@buffetjs/core'
-import convertAttrObjToArray from "../../utils/convertAttrObjToArray";
+import ContentTypeTable from "../../components/ContentTypeTable";
+import Row from '../../components/Row'
 
 const ExportData = () => {
   const [state, dispatch] = useReducer(reducer, store);
@@ -35,7 +33,7 @@ const ExportData = () => {
     getComponents();
     getModels();
     // setTimeout(() => {
-      dispatch({type: TOGGLE_LOADING, payload: false});
+    dispatch({type: TOGGLE_LOADING, payload: false});
     // }, 1000)
   }, []);
 
@@ -45,12 +43,12 @@ const ExportData = () => {
   }, [state]);
 
   /*3.set targetModel to the first option*/
-  useEffect(() => {
-    const opt = get(modelOptions, ["0", "value"], "");
-    if (!isEmpty(opt)) {
-      updateTargetModelName(opt);
-    }
-  }, [modelOptions]);
+  // useEffect(() => {
+  //   const opt = get(modelOptions, ["0", "value"], "");
+  //   if (!isEmpty(opt)) {
+  //     updateTargetModelName(opt);
+  //   }
+  // }, [modelOptions]);
 
   /*4.based on targetModel, fetch the model actual object & attributes*/
   useEffect(() => {
@@ -89,41 +87,76 @@ const ExportData = () => {
     const modelOptions = models.map(model => {
       return {
         label: get(model, ["schema", "name"], ""),
-        value: model.uid
+        // value: model.uid,
+        uid: model.uid,
+        checked: true,
       }
     });
     dispatch({type: SET_MODELS, payload: models});
     updateModelOptions(modelOptions);
   };
 
+  const onModelChecked = (val) => {
+    console.log(val);
+    const {uid, checked} = val;
+    const newModelOptions = modelOptions.map(opt => {
+      if (opt.uid === uid) {
+        opt.checked = checked
+      }
+    });
+    updateModelOptions(newModelOptions)
+  };
+
+  const onModelClicked = (val) => {
+    const {uid} = val;
+    updateTargetModelName(uid)
+  };
+
   return (
-          <Block
-            title="General"
-            description="Export your Content Types"
-            style={{marginBottom: 12}}
-          >
-            {
-              get(state, [LOADING], false) ? (
-                <LoadingIndicator/>
-              ) : (
-                <>
-                  <Row className={"col-4 row"}>
-                    <Label htmlFor={"targetContentType"}>Select Content Type</Label>
-                    <Select
-                      name={"targetContentType"}
-                      options={modelOptions}
-                      value={targetModelName}
-                      onChange={({target: {value}}) =>
-                        onSelectTarget(value)}
+    <Block
+      title="General"
+      description="Configure your content types for migration"
+      style={{marginBottom: 12}}
+    >
+      {
+        get(state, [LOADING], false) ? (
+          <LoadingIndicator/>
+        ) : (
+          <>
+            {/*<Row>*/}
+
+            {/*</Row>*/}
+            {/*<Row className={"col-4 row"}>*/}
+            {/*  <Label htmlFor={"targetContentType"}>Select Content Type</Label>*/}
+            {/*  <Select*/}
+            {/*    name={"targetContentType"}*/}
+            {/*    options={modelOptions}*/}
+            {/*    value={targetModelName}*/}
+            {/*    onChange={({target: {value}}) =>*/}
+            {/*      onSelectTarget(value)}*/}
+            {/*  />*/}
+            {/*</Row>*/}
+            < ListViewContext.Provider value={{state, dispatch}}>
+              {!isEmpty(modelOptions) && (
+                <div className={'row'}>
+                  <Row className={'col-6'}>
+                    <ContentTypeTable
+                      className={''}
+                      models={modelOptions}
+                      onModelChecked={onModelChecked}
+                      onModelClicked={onModelClicked}
                     />
                   </Row>
-                  < ListViewContext.Provider value={{state, dispatch}}>
-                    <ContentTypeTree/>
-                  </ListViewContext.Provider>
-                </>
-              )
-            }
-          </Block>
+                  <Row className={'col-6'}>
+                    <ContentTypeTree className={''}/>
+                  </Row>
+                </div>
+              )}
+            </ListViewContext.Provider>
+          </>
+        )
+      }
+    </Block>
   )
 };
 
