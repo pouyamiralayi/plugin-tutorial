@@ -3,7 +3,6 @@ import {colors, ViewContainer, sizes} from 'strapi-helper-plugin';
 
 const Wrapper = styled(ViewContainer)`
   background-color: ${colors.leftMenu.mediumGrey};
-
   .button-secondary {
     &:hover {
       background-color: #ffffff !important;

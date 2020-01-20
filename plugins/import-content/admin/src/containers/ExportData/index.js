@@ -142,11 +142,11 @@ const ExportData = () => {
               />
             </div>
             <div className={'col-md-9 content'}>
-              <Block
-                title="General"
-                description="Configure your content types for migration"
-                style={{marginBottom: 12}}
-              >
+              {/*<Block*/}
+              {/*  title="General"*/}
+              {/*  description="Configure your content types for migration"*/}
+              {/*  style={{marginBottom: 12}}*/}
+              {/*>*/}
                 {
                   get(state, [LOADING], false) ? (
                     <LoadingIndicator/>
@@ -173,7 +173,7 @@ const ExportData = () => {
                     </>
                   )
                 }
-              </Block>
+              {/*</Block>*/}
             </div>
           </div>
         </div>
