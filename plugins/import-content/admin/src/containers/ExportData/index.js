@@ -130,54 +130,52 @@ const ExportData = () => {
   };
 
   return (
-    <Block
-      title="General"
-      description="Configure your content types for migration"
-      style={{marginBottom: 12}}
-    >
-      {
-        get(state, [LOADING], false) ? (
-          <LoadingIndicator/>
-        ) : (
-          <>
-            {/*<Row>*/}
+    <div className={'container-fluid'}>
+      <div className={'row'}>
+        <Row className={'col-3'}>
+          <ContentTypeTable
+            className={''}
+            models={modelOptions}
+            onModelChecked={onModelChecked}
+            onModelClicked={onModelClicked}
+          />
+        </Row>
+        <Row className={'col-9'}>
+          <Block
+            title="General"
+            description="Configure your content types for migration"
+            style={{marginBottom: 12}}
+          >
+            {
+              get(state, [LOADING], false) ? (
+                <LoadingIndicator/>
+              ) : (
+                <>
+                  {/*<Row>*/}
 
-            {/*</Row>*/}
-            {/*<Row className={"col-4 row"}>*/}
-            {/*  <Label htmlFor={"targetContentType"}>Select Content Type</Label>*/}
-            {/*  <Select*/}
-            {/*    name={"targetContentType"}*/}
-            {/*    options={modelOptions}*/}
-            {/*    value={targetModelName}*/}
-            {/*    onChange={({target: {value}}) =>*/}
-            {/*      onSelectTarget(value)}*/}
-            {/*  />*/}
-            {/*</Row>*/}
-            < ListViewContext.Provider value={{state, dispatch}}>
-              {!isEmpty(modelOptions) && (
-                <div className={'row'}>
-                  <Row className={'col-5'}>
-                    {/*<LeftMenu*/}
-                    {/*  models={modelOptions}*/}
-                    {/*  onModelClicked={onModelClicked}*/}
-                    {/*/>*/}
-                    <ContentTypeTable
-                      className={''}
-                      models={modelOptions}
-                      onModelChecked={onModelChecked}
-                      onModelClicked={onModelClicked}
-                    />
-                  </Row>
-                  <Row className={'col-5'}>
-                    <ContentTypeTree className={''}/>
-                  </Row>
-                </div>
-              )}
-            </ListViewContext.Provider>
-          </>
-        )
-      }
-    </Block>
+                  {/*</Row>*/}
+                  {/*<Row className={"col-4 row"}>*/}
+                  {/*  <Label htmlFor={"targetContentType"}>Select Content Type</Label>*/}
+                  {/*  <Select*/}
+                  {/*    name={"targetContentType"}*/}
+                  {/*    options={modelOptions}*/}
+                  {/*    value={targetModelName}*/}
+                  {/*    onChange={({target: {value}}) =>*/}
+                  {/*      onSelectTarget(value)}*/}
+                  {/*  />*/}
+                  {/*</Row>*/}
+                  < ListViewContext.Provider value={{state, dispatch}}>
+                    {!isEmpty(modelOptions) && (
+                      <ContentTypeTree className={''}/>
+                    )}
+                  </ListViewContext.Provider>
+                </>
+              )
+            }
+          </Block>
+        </Row>
+      </div>
+    </div>
   )
 };
 
