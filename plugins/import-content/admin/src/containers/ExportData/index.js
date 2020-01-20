@@ -119,13 +119,13 @@ const ExportData = () => {
   const onModelClicked = (val) => {
     console.log(val);
     const {uid} = val;
-    const newModelOptions = modelOptions.map(opt => {
-      if (opt.uid === uid) {
-        opt.selected = true;
-      }
-      return opt
-    });
-    updateModelOptions(newModelOptions);
+    // const newModelOptions = modelOptions.map(opt => {
+    //   if (opt.uid === uid) {
+    //     opt.selected = true;
+    //   }
+    //   return opt
+    // });
+    // updateModelOptions(newModelOptions);
     updateTargetModelName(uid)
   };
 

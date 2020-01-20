@@ -24,7 +24,7 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, models, configs}) => 
           onClick={ev => {
             onModelClicked({uid})
           }}
-          className={['clickable', selected ? 'clicked' : '']}>
+          className={['clickable']}>
           <a>
             {label} &nbsp;
             <Checkbox
