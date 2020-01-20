@@ -80,46 +80,36 @@ const ContentTypeTree = () => {
   };
 
   return (
-      <div className="">
-        <div className="row">
-          {/*<LeftMenu wait={wait}/>*/}
-          <div
-            className=""
-          >
-            {/*<Header {...headerProps} />*/}
-            <ListWrapper style={{marginBottom: 80}}>
-              <ListHeader title={listTitle}/>
-              <PopUpWarning
-                isOpen={showDeleteModal}
-                toggleModal={() => toggleShowDeleteModal(false)}
-                content={{
-                  title: getTrad('popUpWarning.bodyMessage.attribute.confirm'),
-                  message: getTrad('popUpWarning.bodyMessage.attribute.delete')
-                }}
-                popUpWarningType="danger"
-                onConfirm={() => {
-                  dispatch({type: REMOVE_ATTRIBUTE, payload: fieldToDelete});
-                  toggleShowDeleteModal(false)
-                }}
-              />
-              <FormModalEdit
-                isOpen={showEditModal}
-                onFormSave={onFormEdit}
-                onClose={() => toggleShowEditModal(false)}
-                onToggle={() => toggleShowEditModal(prev => !prev)}
-                fieldToEdit={fieldToEdit}
-              />
-              <ContentTypeList
-                items={attrsArray}
-                customRowComponent={props => <CustomRow {...props} />}
-                editTarget={'contentType'}
-                targetUid={targetUid}
-                targetName={targetName}
-              />
-            </ListWrapper>
-          </div>
-        </div>
-      </div>
+    <ListWrapper style={{marginBottom: 80}}>
+      <ListHeader title={listTitle}/>
+      <PopUpWarning
+        isOpen={showDeleteModal}
+        toggleModal={() => toggleShowDeleteModal(false)}
+        content={{
+          title: getTrad('popUpWarning.bodyMessage.attribute.confirm'),
+          message: getTrad('popUpWarning.bodyMessage.attribute.delete')
+        }}
+        popUpWarningType="danger"
+        onConfirm={() => {
+          dispatch({type: REMOVE_ATTRIBUTE, payload: fieldToDelete});
+          toggleShowDeleteModal(false)
+        }}
+      />
+      <FormModalEdit
+        isOpen={showEditModal}
+        onFormSave={onFormEdit}
+        onClose={() => toggleShowEditModal(false)}
+        onToggle={() => toggleShowEditModal(prev => !prev)}
+        fieldToEdit={fieldToEdit}
+      />
+      <ContentTypeList
+        items={attrsArray}
+        customRowComponent={props => <CustomRow {...props} />}
+        editTarget={'contentType'}
+        targetUid={targetUid}
+        targetName={targetName}
+      />
+    </ListWrapper>
   )
 };
 

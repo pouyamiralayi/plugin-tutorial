@@ -11,7 +11,7 @@ import { Wrapper, Sub } from './components';
 const renderMsg = msg => <p>{msg}</p>;
 
 const Block = ({ children, description, style, title }) => (
-  <div className="col-md-12">
+  <div className="">
     <Wrapper style={style}>
       <Sub>
         {!!title && (

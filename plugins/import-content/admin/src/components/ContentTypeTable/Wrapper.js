@@ -7,8 +7,6 @@ const Wrapper = styled.div`
   min-height: calc(100vh - ${sizes.header.height});
   background-color: ${colors.leftMenu.mediumGrey};
   padding-top: 3.1rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
 `;
 
 export default Wrapper;
