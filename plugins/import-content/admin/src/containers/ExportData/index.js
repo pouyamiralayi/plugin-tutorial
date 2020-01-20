@@ -92,7 +92,6 @@ const ExportData = () => {
         // value: model.uid,
         uid: model.uid,
         checked: true,
-        selected: false,
       }
     });
     dispatch({type: SET_MODELS, payload: models});

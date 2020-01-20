@@ -12,7 +12,7 @@ import getTrad from "../../utils/getTrad";
 const ContentTypeTable = ({onModelChecked, onModelClicked, models, configs, selectedOption}) => {
 
     // console.log('modelOptions: ', models);
-    const CustomRow = ({label, uid, checked, selected}) => {
+    const CustomRow = ({label, uid, checked}) => {
       // console.log(label, uid, checked, selected);
       // const {label, uid, checked, selected} = row;
       return (
@@ -24,7 +24,7 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, models, configs, sele
           }}
           className={['clickable']}>
           <a>
-            {label} &nbsp;
+            <span>{label}</span> &nbsp;
             <Checkbox
               name={uid}
               onChange={({target: {value}}) => onModelChecked({uid, checked: value})}
