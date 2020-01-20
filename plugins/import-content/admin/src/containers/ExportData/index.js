@@ -22,6 +22,7 @@ import LeftMenu from "../LeftMenu";
 import Wrapper from './Wrapper'
 const ExportData = () => {
   const [state, dispatch] = useReducer(reducer, store);
+  const [selectedOption, updateSelectedOption] = useState("");
   const [targetModelName, updateTargetModelName] = useState("");
   const [targetModelObj, updateTargetModelObj] = useState("");
   const [targetUid, updateTargetUid] = useState("");
@@ -100,6 +101,7 @@ const ExportData = () => {
     if (!isEmpty(opt)) {
       // console.log(opt);
       updateTargetModelName(opt);
+      updateSelectedOption(opt)
     }
   };
 
@@ -117,8 +119,9 @@ const ExportData = () => {
   };
 
   const onModelClicked = (val) => {
-    console.log(val);
+    // console.log(val);
     const {uid} = val;
+    updateSelectedOption(uid);
     // const newModelOptions = modelOptions.map(opt => {
     //   if (opt.uid === uid) {
     //     opt.selected = true;
@@ -139,6 +142,7 @@ const ExportData = () => {
                 models={modelOptions}
                 onModelChecked={onModelChecked}
                 onModelClicked={onModelClicked}
+                selectedOption={selectedOption}
               />
             </div>
             <div className={'col-md-9 content'}>

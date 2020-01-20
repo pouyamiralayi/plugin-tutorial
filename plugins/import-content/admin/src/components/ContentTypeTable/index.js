@@ -1,18 +1,15 @@
-import React, {useState, useRedux, useContext, useEffect} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {Checkbox} from '@buffetjs/core'
 // import {List} from '@buffetjs/custom'
 import List from './List'
 import Wrapper from './Wrapper'
 import TableRow from '../TableRow'
-import {mode} from "simple-statistics";
 import WrapperList from "./WrapperList";
-import Row from "../Row";
 import {FormattedMessage} from 'react-intl'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import getTrad from "../../utils/getTrad";
 
-const ContentTypeTable = ({onModelChecked, onModelClicked, models, configs}) => {
+const ContentTypeTable = ({onModelChecked, onModelClicked, models, configs, selectedOption}) => {
 
     // console.log('modelOptions: ', models);
     const CustomRow = ({label, uid, checked, selected}) => {
@@ -24,7 +21,7 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, models, configs}) => 
           onClick={ev => {
             onModelClicked({uid})
           }}
-          className={['clickable']}>
+          className={['clickable',`${selectedOption === uid ? 'clicked' : ''}`]}>
           <a>
             {label} &nbsp;
             <Checkbox
@@ -104,6 +101,7 @@ ContentTypeTable.propTypes = {
   onModelClicked: PropTypes.func,
   models: PropTypes.array,
   configs: PropTypes.array,
+  selectedOption: PropTypes.string,
 };
 
 ContentTypeTable.defaultProps = {

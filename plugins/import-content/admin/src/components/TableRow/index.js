@@ -2,8 +2,8 @@ import styled from "styled-components";
 import {colors} from 'strapi-helper-plugin'
 
 const Row = styled.li`
-  .clicked {
-    background-color: ${colors.green};
+  &.clicked {
+    background-color: ${colors.leftMenu.lightGrey};
   }
   width:100%;
   padding-top: 18px;
