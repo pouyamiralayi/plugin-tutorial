@@ -14,7 +14,6 @@ import pluginId from '../../pluginId';
 // Containers
 import HomePage from '../HomePage';
 import HistoryPage from "../HistoryPage";
-import ExportPage from "../ExportPage"
 import ExportData from "../ExportData";
 const App = () => {
   return (

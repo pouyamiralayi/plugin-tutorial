@@ -1,12 +1,8 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import PropTypes from 'prop-types'
 import ListViewContext from "../../utils/ListViewContext";
-import {ATTRIBUTES, ATTRIBUTES_ARRAY, COMPONENTS, TARGET, TARGET_NAME, TARGET_UID} from "../../utils/constants";
-import {get, isEmpty} from 'lodash'
 import Wrapper from '../List/List'
-import convertAttrObjToArray from "../../utils/convertAttrObjToArray";
 import ComponentTree from "../ComponentTree";
-import DynamicZoneList from "../DynamicZoneList";
 import DynamicZoneTree from "../DynamicZoneTree";
 
 const ContentTypeList = ({

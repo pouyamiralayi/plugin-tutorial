@@ -1,21 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
 import ListViewContext from "../../utils/ListViewContext";
-import {
-  ATTRIBUTES,
-  ATTRIBUTES_ARRAY,
-  EDIT_ATTRIBUTE,
-  PERFORM_DELETE_ACTION, REMOVE_ATTRIBUTE, SHOW_DELETE_MODAL,
-  TARGET,
-  TOGGLE_DELETE_MODAL
-} from "../../utils/constants";
-import {get, has, omit} from 'lodash'
-import {ListWrapper, useGlobalContext, PopUpWarning} from 'strapi-helper-plugin'
-import Wrapper from '../ListView/Wrapper'
+import {ATTRIBUTES, EDIT_ATTRIBUTE, REMOVE_ATTRIBUTE, SHOW_DELETE_MODAL, TARGET} from "../../utils/constants";
+import {get} from 'lodash'
+import {ListWrapper, PopUpWarning, useGlobalContext} from 'strapi-helper-plugin'
 import ListHeader from "../ListHeader";
 import pluginId from "../../pluginId";
 import ContentTypeList from "../ContentTypeList";
-import ListRow from "../ListRow";
-import PropTypes from "prop-types";
 import TreeRow from "../TreeRow";
 import FormModalEdit from "../FormModalEdit";
 import convertAttrObjToArray from "../../utils/convertAttrObjToArray";

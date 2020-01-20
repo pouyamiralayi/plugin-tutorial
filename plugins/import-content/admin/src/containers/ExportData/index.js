@@ -1,6 +1,6 @@
 import React, {useEffect, useReducer, useState} from 'react';
 import {reducer, store} from "../DataManagerProvider/reducer";
-import {isEmpty, get, has} from "lodash";
+import {get, has, isEmpty} from "lodash";
 import {
   ATTRIBUTES,
   LOADING,
@@ -18,6 +18,7 @@ import {LoadingIndicator, request} from 'strapi-helper-plugin'
 import Block from "../../components/Block";
 import ContentTypeTable from "../../components/ContentTypeTable";
 import Row from '../../components/Row'
+import LeftMenu from "../LeftMenu";
 
 const ExportData = () => {
   const [state, dispatch] = useReducer(reducer, store);
@@ -90,6 +91,7 @@ const ExportData = () => {
         // value: model.uid,
         uid: model.uid,
         checked: true,
+        selected: false,
       }
     });
     dispatch({type: SET_MODELS, payload: models});
@@ -102,18 +104,28 @@ const ExportData = () => {
   };
 
   const onModelChecked = (val) => {
-    console.log(val);
+    // console.log(val);
     const {uid, checked} = val;
     const newModelOptions = modelOptions.map(opt => {
       if (opt.uid === uid) {
-        opt.checked = checked
+        opt.checked = checked;
       }
+      return opt
     });
+    // console.log(newModelOptions)
     updateModelOptions(newModelOptions)
   };
 
   const onModelClicked = (val) => {
+    console.log(val);
     const {uid} = val;
+    const newModelOptions = modelOptions.map(opt => {
+      if (opt.uid === uid) {
+        opt.selected = true;
+      }
+      return opt
+    });
+    updateModelOptions(newModelOptions);
     updateTargetModelName(uid)
   };
 
@@ -144,7 +156,11 @@ const ExportData = () => {
             < ListViewContext.Provider value={{state, dispatch}}>
               {!isEmpty(modelOptions) && (
                 <div className={'row'}>
-                  <Row className={'col-6'}>
+                  <Row className={'col-5'}>
+                    {/*<LeftMenu*/}
+                    {/*  models={modelOptions}*/}
+                    {/*  onModelClicked={onModelClicked}*/}
+                    {/*/>*/}
                     <ContentTypeTable
                       className={''}
                       models={modelOptions}
@@ -152,7 +168,7 @@ const ExportData = () => {
                       onModelClicked={onModelClicked}
                     />
                   </Row>
-                  <Row className={'col-6'}>
+                  <Row className={'col-5'}>
                     <ContentTypeTree className={''}/>
                   </Row>
                 </div>
