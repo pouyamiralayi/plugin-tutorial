@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import {colors} from 'strapi-helper-plugin'
 
-const Row = styled.tr`
+const Row = styled.li`
+  width:100%;
   padding-top: 18px;
   &.clickable {
     &:hover {
