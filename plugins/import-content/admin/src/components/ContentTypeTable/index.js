@@ -10,7 +10,7 @@ import {FormattedMessage} from 'react-intl'
 import getTrad from "../../utils/getTrad";
 import ContentTypeTableSubList from "../ContentTypeTableSubList";
 
-const ContentTypeTable = ({onModelChecked, onModelClicked, models, configs, selectedOption}) => {
+const ContentTypeTable = ({onModelChecked, onModelClicked, onConfigClicked, onConfigDelete, models, configs, selectedOption, selectedMenu, selectedConfigOption}) => {
 
   const [search, setSearch] = useState("");
   const migrations = [
@@ -30,12 +30,12 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, models, configs, sele
     }
   ];
   // console.log('modelOptions: ', models);
-  const CustomRow = ({label, uid, checked}) => {
+  const CustomRow = ({label, uid, checked, selectedMenu}) => {
     // console.log(label, uid, checked, selected);
     // const {label, uid, checked, selected} = row;
     return (
       <TableRow
-        selected={selectedOption === uid}
+        selected={selectedMenu === 'models' ? selectedOption === uid : null}
         key={uid}
         onClick={ev => {
           onModelClicked({uid})
@@ -57,6 +57,7 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, models, configs, sele
     uid: PropTypes.string,
     checked: PropTypes.bool,
     selected: PropTypes.bool,
+    selectedMenu: PropTypes.string,
   };
 
   const props = {
@@ -110,7 +111,13 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, models, configs, sele
           </div>
         </div>
         <List>
-        {migrations.map((m, i) => <ContentTypeTableSubList {...m} isFirstItem={i == 0} key={i}/>)}
+          {migrations.map((m, i) => <ContentTypeTableSubList
+            key={i}
+            {...m}
+            onConfigClicked={onConfigClicked}
+            onClickDelete={onConfigDelete}
+            isFirstItem={i == 0}
+          />)}
         </List>
       </WrapperList>
     </Wrapper>
@@ -120,13 +127,23 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, models, configs, sele
 ContentTypeTable.propTypes = {
   onModelChecked: PropTypes.func,
   onModelClicked: PropTypes.func,
+  onConfigClicked: PropTypes.func,
+  onConfigDelete: PropTypes.func,
   models: PropTypes.array,
   configs: PropTypes.array,
   selectedOption: PropTypes.string,
+  selectedConfigOption: PropTypes.string,
+  selectedMenu: PropTypes.string,
 };
 
 ContentTypeTable.defaultProps = {
-  configs: []
+  configs: [],
+  onConfigClicked: () => {
+  },
+  onConfigDelete: () => {
+  },
+  onModelClicked: () => {
+  },
 };
 
 export default ContentTypeTable

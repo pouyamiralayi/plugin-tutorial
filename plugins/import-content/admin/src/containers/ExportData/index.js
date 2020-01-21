@@ -20,15 +20,21 @@ import ContentTypeTable from "../../components/ContentTypeTable";
 import Row from '../../components/Row'
 import LeftMenu from "../LeftMenu";
 import Wrapper from './Wrapper'
+
 const ExportData = () => {
   const [state, dispatch] = useReducer(reducer, store);
-  const [selectedOption, updateSelectedOption] = useState("");
   const [targetModelName, updateTargetModelName] = useState("");
   const [targetModelObj, updateTargetModelObj] = useState("");
   const [targetUid, updateTargetUid] = useState("");
   const [targetName, updateTargetName] = useState("");
 
   const [modelOptions, updateModelOptions] = useState([]);
+  const [selectedOption, updateSelectedOption] = useState("");
+
+  const [configOptions, updateConfigOptions] = useState([]);
+  const [selectedConfigOption, updateSelectedConfigOption] = useState("");
+  const [targetConfigName, updateTargetConfigName] = useState(""); // the target migration
+  const [selectedMenu, toggleSelectedMenu] = useState("");
 
   /*1.receive models & components*/
   useEffect(() => {
@@ -119,8 +125,6 @@ const ExportData = () => {
 
   const onModelClicked = (val) => {
     // console.log(val);
-    const {uid} = val;
-    updateSelectedOption(uid);
     // const newModelOptions = modelOptions.map(opt => {
     //   if (opt.uid === uid) {
     //     opt.selected = true;
@@ -128,7 +132,23 @@ const ExportData = () => {
     //   return opt
     // });
     // updateModelOptions(newModelOptions);
-    updateTargetModelName(uid)
+    const {uid} = val;
+    updateSelectedOption(uid);
+    updateTargetModelName(uid);
+    toggleSelectedMenu('models') // todo move to constants
+
+  };
+
+  const onConfigClicked = (val) => {
+    console.log(val);
+    const {uid, configTitle} = val; // todo now that we know which content type, which migration...
+    updateSelectedConfigOption(uid);
+    updateTargetConfigName(configTitle);
+    toggleSelectedMenu('configs') // todo move to constants
+  };
+
+  const onConfigDelete = (val) => {
+    console.log(val)
   };
 
   return (
@@ -139,8 +159,11 @@ const ExportData = () => {
             <div className={'col-md-3'}>
               <ContentTypeTable
                 models={modelOptions}
+                configs={configOptions}
                 onModelChecked={onModelChecked}
                 onModelClicked={onModelClicked}
+                onConfigClicked={onConfigClicked}
+                onConfigDelete={onConfigDelete}
                 selectedOption={selectedOption}
               />
             </div>
@@ -150,32 +173,32 @@ const ExportData = () => {
               {/*  description="Configure your content types for migration"*/}
               {/*  style={{marginBottom: 12}}*/}
               {/*>*/}
-                {
-                  get(state, [LOADING], false) ? (
-                    <LoadingIndicator/>
-                  ) : (
-                    <>
-                      {/*<Row>*/}
+              {
+                get(state, [LOADING], false) ? (
+                  <LoadingIndicator/>
+                ) : (
+                  <>
+                    {/*<Row>*/}
 
-                      {/*</Row>*/}
-                      {/*<Row className={"col-4 row"}>*/}
-                      {/*  <Label htmlFor={"targetContentType"}>Select Content Type</Label>*/}
-                      {/*  <Select*/}
-                      {/*    name={"targetContentType"}*/}
-                      {/*    options={modelOptions}*/}
-                      {/*    value={targetModelName}*/}
-                      {/*    onChange={({target: {value}}) =>*/}
-                      {/*      onSelectTarget(value)}*/}
-                      {/*  />*/}
-                      {/*</Row>*/}
-                      <Row>
-                        {!isEmpty(modelOptions) && (
-                          <ContentTypeTree className={''}/>
-                        )}
-                      </Row>
-                    </>
-                  )
-                }
+                    {/*</Row>*/}
+                    {/*<Row className={"col-4 row"}>*/}
+                    {/*  <Label htmlFor={"targetContentType"}>Select Content Type</Label>*/}
+                    {/*  <Select*/}
+                    {/*    name={"targetContentType"}*/}
+                    {/*    options={modelOptions}*/}
+                    {/*    value={targetModelName}*/}
+                    {/*    onChange={({target: {value}}) =>*/}
+                    {/*      onSelectTarget(value)}*/}
+                    {/*  />*/}
+                    {/*</Row>*/}
+                    <Row>
+                      {!isEmpty(modelOptions) && (
+                        <ContentTypeTree className={''}/>
+                      )}
+                    </Row>
+                  </>
+                )
+              }
               {/*</Block>*/}
             </div>
           </div>

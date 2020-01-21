@@ -1,13 +1,11 @@
-import React, {useEffect, useContext, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import TableRow from "../TableRow";
-import {Checkbox} from '@buffetjs/core'
 import {Collapse} from 'reactstrap';
 import Dropdown from "./DROPDOWN.JS";
-import List from "../ContentTypeTable/List";
 
-const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onClickDelete}) => {
+const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onClickDelete, onConfigClicked}) => {
   const [collapse, setCollapse] = useState(isFirstItem);
 
   const toggle = () => {
@@ -24,7 +22,7 @@ const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onCli
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSearching]);
 
-  const CustomRow = ({uid, name}) => {
+  const CustomRow = ({uid, name, title}) => {
     // console.log(label, uid, checked, selected);
     // const {label, uid, checked, selected} = row;
     return (
@@ -32,7 +30,7 @@ const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onCli
         // selected={selectedOption === uid}
         key={uid}
         onClick={ev => {
-          // onModelClicked({uid})
+          onConfigClicked({uid, configTitle: title})
         }}
         className={['clickable']}>
         <a>
@@ -58,9 +56,11 @@ const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onCli
         >
           {title}
           <FontAwesomeIcon
-            icon={'fa fa-trash'}
+            className="link-icon"
+            icon={'trash'}
             onClick={e => {
-              onClickDelete(e, {title})
+              e.stopPropagation();
+              onClickDelete({title})
             }}
           />
         </button>
@@ -69,7 +69,7 @@ const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onCli
             {models.map(m => {
               const {uid} = m;
               return (
-                <CustomRow key={uid} {...m}/>
+                <CustomRow key={uid} title={title} {...m}/>
               )
             })}
           </ul>
@@ -86,6 +86,8 @@ ContentTypeTableSubList.defaultProps = {
   isFirstItem: false,
   isSearching: false,
   onClickDelete: () => {
+  },
+  onConfigClicked: () => {
   }
 };
 
@@ -95,6 +97,7 @@ ContentTypeTableSubList.propTypes = {
   isFirstItem: PropTypes.bool,
   isSearching: PropTypes.bool,
   onClickDelete: PropTypes.func,
+  onConfigClicked: PropTypes.func,
 };
 
 export default ContentTypeTableSubList;
