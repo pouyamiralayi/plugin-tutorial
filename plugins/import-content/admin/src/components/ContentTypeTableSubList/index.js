@@ -59,7 +59,6 @@ const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onCli
             className="link-icon"
             icon={'trash'}
             onClick={e => {
-              e.stopPropagation();
               onClickDelete({title})
             }}
           />

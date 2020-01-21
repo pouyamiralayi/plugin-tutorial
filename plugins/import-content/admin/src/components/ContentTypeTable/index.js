@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Checkbox} from '@buffetjs/core'
+// import {Checkbox} from '@buffetjs/core'
+import Checkbox from './Checkbox'
 // import {List} from '@buffetjs/custom'
 import List from './List'
 import Wrapper from './Wrapper'
@@ -45,7 +46,14 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, onConfigClicked, onCo
           <span>{label}</span> &nbsp;
           <Checkbox
             name={uid}
-            onChange={({target: {value}}) => onModelChecked({uid, checked: value})}
+            onChange={(e) => {
+              e.persist();
+              e.nativeEvent.stopImmediatePropagation();
+              e.stopPropagation();
+              const {target: {value}} = e;
+              onModelChecked({uid, checked: value})
+            }
+            }
             value={checked}/>
         </a>
       </TableRow>
