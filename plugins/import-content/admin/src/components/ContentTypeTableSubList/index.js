@@ -5,7 +5,7 @@ import TableRow from "../TableRow";
 import {Collapse} from 'reactstrap';
 import Dropdown from "./DROPDOWN.JS";
 
-const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onClickDelete, onConfigClicked}) => {
+const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onClickDelete, onConfigClicked, selectedMenu, selectedConfigOption}) => {
   const [collapse, setCollapse] = useState(isFirstItem);
 
   const toggle = () => {
@@ -22,12 +22,12 @@ const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onCli
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSearching]);
 
-  const CustomRow = ({uid, name, title}) => {
+  const CustomRow = ({uid, name, title, selectedConfigOption}) => {
     // console.log(label, uid, checked, selected);
     // const {label, uid, checked, selected} = row;
     return (
       <TableRow
-        // selected={selectedOption === uid}
+        selected={selectedMenu === 'configs' ? selectedConfigOption.uid === uid && selectedConfigOption.configTitle === title : ""}
         key={uid}
         onClick={ev => {
           onConfigClicked({uid, configTitle: title})
@@ -68,7 +68,7 @@ const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onCli
             {models.map(m => {
               const {uid} = m;
               return (
-                <CustomRow key={uid} title={title} {...m}/>
+                <CustomRow key={uid} title={title} {...m} selectedConfigOption={selectedConfigOption}/>
               )
             })}
           </ul>
@@ -87,7 +87,9 @@ ContentTypeTableSubList.defaultProps = {
   onClickDelete: () => {
   },
   onConfigClicked: () => {
-  }
+  },
+  selectedMenu: "",
+  selectedConfigOption: "",
 };
 
 ContentTypeTableSubList.propTypes = {
@@ -97,6 +99,8 @@ ContentTypeTableSubList.propTypes = {
   isSearching: PropTypes.bool,
   onClickDelete: PropTypes.func,
   onConfigClicked: PropTypes.func,
+  selectedMenu: PropTypes.string,
+  selectedConfigOption: PropTypes.string,
 };
 
 export default ContentTypeTableSubList;

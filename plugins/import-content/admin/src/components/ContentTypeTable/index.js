@@ -34,6 +34,7 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, onConfigClicked, onCo
   const CustomRow = ({label, uid, checked, selectedMenu}) => {
     // console.log(label, uid, checked, selected);
     // const {label, uid, checked, selected} = row;
+    console.log(selectedMenu);
     return (
       <TableRow
         selected={selectedMenu === 'models' ? selectedOption === uid : null}
@@ -83,7 +84,7 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, onConfigClicked, onCo
 
   const renderItem = (m, i) => {
     return (
-      <CustomRow {...m} key={i}/>
+      <CustomRow {...m} key={i} selectedMenu={selectedMenu}/>
     )
   };
 
@@ -125,6 +126,8 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, onConfigClicked, onCo
             onConfigClicked={onConfigClicked}
             onClickDelete={onConfigDelete}
             isFirstItem={i == 0}
+            selectedMenu={selectedMenu}
+            selectedConfigOption={selectedConfigOption}
           />)}
         </List>
       </WrapperList>

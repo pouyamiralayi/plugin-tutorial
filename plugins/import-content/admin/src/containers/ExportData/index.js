@@ -32,7 +32,7 @@ const ExportData = () => {
   const [selectedOption, updateSelectedOption] = useState("");
 
   const [configOptions, updateConfigOptions] = useState([]);
-  const [selectedConfigOption, updateSelectedConfigOption] = useState("");
+  const [selectedConfigOption, updateSelectedConfigOption] = useState({});
   const [targetConfigName, updateTargetConfigName] = useState(""); // the target migration
   const [selectedMenu, toggleSelectedMenu] = useState("");
 
@@ -142,7 +142,7 @@ const ExportData = () => {
   const onConfigClicked = (val) => {
     console.log(val);
     const {uid, configTitle} = val; // todo now that we know which content type, which migration...
-    updateSelectedConfigOption(uid);
+    updateSelectedConfigOption({uid,configTitle});
     updateTargetConfigName(configTitle);
     toggleSelectedMenu('configs') // todo move to constants
   };
@@ -165,6 +165,8 @@ const ExportData = () => {
                 onConfigClicked={onConfigClicked}
                 onConfigDelete={onConfigDelete}
                 selectedOption={selectedOption}
+                selectedConfigOption={selectedConfigOption}
+                selectedMenu={selectedMenu}
               />
             </div>
             <div className={'col-md-9 content'}>
