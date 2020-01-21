@@ -20,6 +20,13 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, models, configs, sele
         {uid: 'application::book.book', name: 'book'},
         {uid: 'application::contact.contact', name: 'contact'}
       ]
+    },
+    {
+      title: "18.4",
+      models: [
+        {uid: 'application::book.book', name: 'book'},
+        {uid: 'application::contact.contact', name: 'contact'}
+      ]
     }
   ];
   // console.log('modelOptions: ', models);

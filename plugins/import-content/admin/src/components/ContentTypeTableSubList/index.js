@@ -64,16 +64,16 @@ const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onCli
             }}
           />
         </button>
-          <Collapse isOpen={collapse}>
-            <ul>
-              {models.map(m => {
-                const {uid} = m;
-                return (
-                  <CustomRow key={uid} {...m}/>
-                )
-              })}
-            </ul>
-          </Collapse>
+        <Collapse isOpen={collapse}>
+          <ul>
+            {models.map(m => {
+              const {uid} = m;
+              return (
+                <CustomRow key={uid} {...m}/>
+              )
+            })}
+          </ul>
+        </Collapse>
       </Dropdown>
     )
   )

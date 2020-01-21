@@ -3,9 +3,10 @@ import styled from 'styled-components';
 import {colors} from 'strapi-helper-plugin';
 
 const List = styled.ul`
+  height:auto;
   margin-bottom: 0;
   padding-left: 0;
-  max-height: 251px;
+  // max-height: 251px;
   overflow-y: scroll;
   li {
     position: relative;
