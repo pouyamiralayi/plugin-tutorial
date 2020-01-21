@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import TableRow from "../TableRow";
 import {Checkbox} from '@buffetjs/core'
-import { Collapse } from 'reactstrap';
+import {Collapse} from 'reactstrap';
 import Dropdown from "./DROPDOWN.JS";
+import List from "../ContentTypeTable/List";
+
 const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onClickDelete}) => {
   const [collapse, setCollapse] = useState(isFirstItem);
 
@@ -62,18 +64,16 @@ const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onCli
             }}
           />
         </button>
-        <Collapse isOpen={collapse}>
-          <ul>
-            {models.map(m => {
-              const {uid} = m;
-              return (
-                <li key={uid}>
-                  <CustomRow {...m}/>
-                </li>
-              )
-            })}
-          </ul>
-        </Collapse>
+          <Collapse isOpen={collapse}>
+            <ul>
+              {models.map(m => {
+                const {uid} = m;
+                return (
+                  <CustomRow key={uid} {...m}/>
+                )
+              })}
+            </ul>
+          </Collapse>
       </Dropdown>
     )
   )

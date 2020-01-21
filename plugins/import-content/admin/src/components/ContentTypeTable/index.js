@@ -102,7 +102,9 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, models, configs, sele
             </h3>
           </div>
         </div>
+        <List>
         {migrations.map((m, i) => <ContentTypeTableSubList {...m} isFirstItem={i == 0} key={i}/>)}
+        </List>
       </WrapperList>
     </Wrapper>
   )
