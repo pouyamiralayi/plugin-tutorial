@@ -1,7 +1,8 @@
 import React, {useState, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
-// import {Checkbox} from '@buffetjs/core'
-import Checkbox from './Checkbox'
+// import {Label} from '@buffetjs/core'
+import {Checkbox, CheckboxWrapper, Label} from '@buffetjs/styles'
+// import Checkbox from './Checkbox'
 // import {List} from '@buffetjs/custom'
 import List from './List'
 import Wrapper from './Wrapper'
@@ -23,23 +24,35 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, onConfigClicked, onCo
       <TableRow
         selected={selectedMenu === 'models' ? selectedOption === uid : null}
         key={uid}
-        onClick={ev => {
-          onModelClicked({uid})
-        }}
         className={['clickable']}>
         <a>
-          <span>{label}</span> &nbsp;
-          <Checkbox
-            name={uid}
-            onChange={(e) => {
-              e.persist();
-              e.nativeEvent.stopImmediatePropagation();
-              e.stopPropagation();
-              const {target: {value}} = e;
-              onModelChecked({uid, checked: value})
-            }
-            }
-            value={checked}/>
+          <span
+            style={{
+              display: 'flex',
+              width: '150px',
+              textAlign: 'right',
+              flexGrow: 2,
+            }}
+            onClick={ev => {
+              onModelClicked({uid})
+            }}>{label}</span> &nbsp;
+          <div style={{marginTop: 3}}>
+            <CheckboxWrapper>
+              <Label onClick={(e) => {
+                // e.persist();
+                // e.nativeEvent.stopImmediatePropagation();
+                onModelChecked({uid, checked: !checked})
+              }}>
+                <Checkbox
+                  name={uid}
+                  onChange={() => {
+                  }}
+                  checked={checked}
+                  style={{marginRight: 10}}
+                />
+              </Label>
+            </CheckboxWrapper>
+          </div>
         </a>
       </TableRow>
     )
