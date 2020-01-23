@@ -141,7 +141,7 @@ ContentTypeTable.propTypes = {
   models: PropTypes.array,
   configs: PropTypes.array,
   selectedOption: PropTypes.string,
-  selectedConfigOption: PropTypes.string,
+  selectedConfigOption: PropTypes.object,
   selectedMenu: PropTypes.string,
 };
 

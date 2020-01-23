@@ -1,6 +1,6 @@
 import React, {useEffect, useReducer, useState} from 'react';
 import {reducer, store} from "../DataManagerProvider/reducer";
-import {get, has, isEmpty} from "lodash";
+import {get, has, isEmpty, isEqual} from "lodash";
 import {
   ATTRIBUTES,
   LOADING,
@@ -14,12 +14,17 @@ import {
 } from "../../utils/constants";
 import ListViewContext from "../../utils/ListViewContext";
 import ContentTypeTree from "../../components/ContentTypeTree";
-import {LoadingIndicator, request} from 'strapi-helper-plugin'
+import {LoadingIndicator, request, useGlobalContext} from 'strapi-helper-plugin'
 import Block from "../../components/Block";
 import ContentTypeTable from "../../components/ContentTypeTable";
 import Row from '../../components/Row'
 import LeftMenu from "../LeftMenu";
 import Wrapper from './Wrapper'
+import {Button} from '@buffetjs/core'
+import {Header} from '@buffetjs/custom'
+import makeSearch from "strapi-plugin-content-type-builder/admin/src/utils/makeSearch";
+import getTrad from "../../utils/getTrad";
+import {FormattedMessage} from 'react-intl';
 
 const ExportData = () => {
   const [state, dispatch] = useReducer(reducer, store);
@@ -50,6 +55,55 @@ const ExportData = () => {
   const [selectedConfigOption, updateSelectedConfigOption] = useState({});
   const [targetConfigName, updateTargetConfigName] = useState(""); // the target migration
   const [selectedMenu, toggleSelectedMenu] = useState("models");
+
+  const headerProps = {
+    actions:
+      [
+        {
+          color: 'cancel',
+          onClick: () => {
+          },
+          title: 'Reset',
+          type: 'button',
+          // disabled: isEqual(modifiedData, initialData) ? true : false,
+        },
+        {
+          className: 'button-submit',
+          color: 'success',
+          onClick: () => {
+          },
+          title: 'Generate',
+          type: 'submit',
+          // disabled: isEqual(modifiedData, initialData) ? true : false,
+        },
+      ],
+    title: {
+      targetModelName,
+      cta:
+        {
+          icon: 'pencil-alt',
+          onClick: async () => {
+            // await wait();
+            //
+            // if (firstMainDataPath === 'contentType') {
+            //   emitEvent('willEditNameOfContentType');
+            // }
+            //
+            // push({
+            //   search: makeSearch({
+            //     modalType: firstMainDataPath,
+            //     actionType: 'edit',
+            //     settingType: 'base',
+            //     forTarget: firstMainDataPath,
+            //     targetUid,
+            //     headerDisplayName: label,
+            //   }),
+            // });
+          },
+        }
+    },
+    // content: getDescription(),
+  };
 
   /*1.receive models & components*/
   useEffect(() => {
@@ -208,6 +262,16 @@ const ExportData = () => {
                     {/*      onSelectTarget(value)}*/}
                     {/*  />*/}
                     {/*</Row>*/}
+                    {/*<Row style={{display: 'flex', justifyContent: 'space'}}>*/}
+                    {/*  <div className={'col-md-9'}>*/}
+
+                    {/*  </div>*/}
+                    {/*  <div className={'col-md-3'}>*/}
+                    {/*    <Button color={'secondary'}>Reset</Button>*/}
+                    {/*    <Button color={'success'}>Generate</Button>*/}
+                    {/*  </div>*/}
+                    {/*</Row>*/}
+                    <Header {...headerProps}/>
                     <Row>
                       {!isEmpty(modelOptions) && (
                         <ContentTypeTree className={''}/>

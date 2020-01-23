@@ -1,0 +1,19 @@
+{
+  "connection": "default",
+  "collectionName": "components_test_test_comps",
+  "info": {
+    "name": "test-comp",
+    "icon": "ad"
+  },
+  "options": {},
+  "attributes": {
+    "author": {
+      "type": "string"
+    },
+    "identity": {
+      "type": "component",
+      "repeatable": false,
+      "component": "user.identity"
+    }
+  }
+}

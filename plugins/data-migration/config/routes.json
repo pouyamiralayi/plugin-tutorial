@@ -1,0 +1,76 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/migrations",
+      "handler": "DataMigration.getMigrationVersions",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/migrations/:version",
+      "handler": "DataMigration.getMigrationDetails",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/migrations/:version",
+      "handler": "DataMigration.deleteMigration",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/migrations/actions/create",
+      "handler": "DataMigration.createMigration",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/migrations/:version/read",
+      "handler": "DataMigration.importMigration",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/migrations/:version/clone",
+      "handler": "DataMigration.cloneMigrationData",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/migrations/:version/actions/export",
+      "handler": "DataMigration.generateLocalData",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/migrations/:version/actions/import",
+      "handler": "DataMigration.readLocalData",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/migrations/:version/edit",
+      "handler": "DataMigration.editMigration",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

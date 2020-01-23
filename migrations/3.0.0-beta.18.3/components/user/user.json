@@ -1,0 +1,14 @@
+{
+  "info": {
+    "name": "user",
+    "icon": "allergies"
+  },
+  "options": {},
+  "attributes": {
+    "username": {
+      "type": "string"
+    }
+  },
+  "connection": "default",
+  "collectionName": "components_user_users"
+}

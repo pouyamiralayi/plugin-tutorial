@@ -1,0 +1,30 @@
+{
+  "name": "strapi-plugin-data",
+  "version": "0.0.0",
+  "description": "This plugin allows you to migrate your content-types as well as their data between different strapi versions.",
+  "strapi": {
+    "name": "Data Migration",
+    "icon": "database",
+    "description": "Export / Import Content-Types directly from strapi."
+  },
+  "dependencies": {
+    "fs-extra": "^8.1.0"
+  },
+  "author": {
+    "name": "Fabio Nettis",
+    "email": "nettisfabio@gmail.com",
+    "url": "https://github.com/fabio-nettis/strapi-plugin-data"
+  },
+  "maintainers": [
+    {
+      "name": "Fabio Nettis",
+      "email": "nettisfabio@gmail.com",
+      "url": "https://github.com/fabio-nettis/strapi-plugin-data"
+    }
+  ],
+  "engines": {
+    "node": ">=10.0.0",
+    "npm": ">=6.0.0"
+  },
+  "license": "MIT"
+}

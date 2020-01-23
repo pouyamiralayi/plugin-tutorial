@@ -95,6 +95,7 @@
   "form.button.add.field.to.component": "Add another field to this component",
   "form.button.add.field.to.contentType": "Add another field to this content-type",
   "form.button.cancel": "Cancel",
+  "form.button.reset": "Reset",
   "form.button.configure-component": "Configure the component",
   "form.button.configure-view": "Configure the view",
   "form.button.continue": "Continue",

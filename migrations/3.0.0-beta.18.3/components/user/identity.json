@@ -1,0 +1,17 @@
+{
+  "info": {
+    "name": "identity",
+    "icon": "address-book"
+  },
+  "options": {},
+  "attributes": {
+    "postal_code": {
+      "type": "string"
+    },
+    "postal_address": {
+      "type": "string"
+    }
+  },
+  "connection": "default",
+  "collectionName": "components_user_identities"
+}

@@ -1,0 +1,32 @@
+{
+ "info": {
+  "version": "3.0.0-beta.18.3",
+  "customization": false,
+  "createdAt": "2020-01-23T18:19:56.566Z"
+ },
+ "types": {
+  "count": 2,
+  "shapes": [
+   "book",
+   "contacts"
+  ]
+ },
+ "components": {
+  "count": 2,
+  "shapes": [
+   {
+    "group": "test",
+    "components": [
+     "test-comp"
+    ]
+   },
+   {
+    "group": "user",
+    "components": [
+     "identity",
+     "user"
+    ]
+   }
+  ]
+ }
+}

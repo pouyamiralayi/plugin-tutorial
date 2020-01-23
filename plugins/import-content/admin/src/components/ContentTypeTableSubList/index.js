@@ -100,7 +100,7 @@ ContentTypeTableSubList.propTypes = {
   onClickDelete: PropTypes.func,
   onConfigClicked: PropTypes.func,
   selectedMenu: PropTypes.string,
-  selectedConfigOption: PropTypes.string,
+  selectedConfigOption: PropTypes.object,
 };
 
 export default ContentTypeTableSubList;
