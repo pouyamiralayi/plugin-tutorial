@@ -14,22 +14,6 @@ import ContentTypeTableSubList from "../ContentTypeTableSubList";
 const ContentTypeTable = ({onModelChecked, onModelClicked, onConfigClicked, onConfigDelete, models, configs, selectedOption, selectedMenu, selectedConfigOption}) => {
 
   const [search, setSearch] = useState("");
-  const migrations = [
-    {
-      title: "18.3",
-      models: [
-        {uid: 'application::book.book', name: 'book'},
-        {uid: 'application::contact.contact', name: 'contact'}
-      ]
-    },
-    {
-      title: "18.4",
-      models: [
-        {uid: 'application::book.book', name: 'book'},
-        {uid: 'application::contact.contact', name: 'contact'}
-      ]
-    }
-  ];
   // console.log('modelOptions: ', models);
   const CustomRow = ({label, uid, checked, selectedMenu}) => {
     // console.log(label, uid, checked, selected);
@@ -120,7 +104,7 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, onConfigClicked, onCo
           </div>
         </div>
         <List>
-          {migrations.map((m, i) => <ContentTypeTableSubList
+          {configs.map((m, i) => <ContentTypeTableSubList
             key={i}
             {...m}
             onConfigClicked={onConfigClicked}

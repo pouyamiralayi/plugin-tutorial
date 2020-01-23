@@ -31,10 +31,25 @@ const ExportData = () => {
   const [modelOptions, updateModelOptions] = useState([]);
   const [selectedOption, updateSelectedOption] = useState("");
 
-  const [configOptions, updateConfigOptions] = useState([]);
+  const [configOptions, updateConfigOptions] = useState([
+    {
+      title: "18.3",
+      models: [
+        {uid: 'application::book.book', name: 'book'},
+        {uid: 'application::contact.contact', name: 'contact'}
+      ]
+    },
+    {
+      title: "18.4",
+      models: [
+        {uid: 'application::book.book', name: 'book'},
+        {uid: 'application::contact.contact', name: 'contact'}
+      ]
+    }
+  ]);
   const [selectedConfigOption, updateSelectedConfigOption] = useState({});
   const [targetConfigName, updateTargetConfigName] = useState(""); // the target migration
-  const [selectedMenu, toggleSelectedMenu] = useState("");
+  const [selectedMenu, toggleSelectedMenu] = useState("models");
 
   /*1.receive models & components*/
   useEffect(() => {
@@ -142,7 +157,7 @@ const ExportData = () => {
   const onConfigClicked = (val) => {
     console.log(val);
     const {uid, configTitle} = val; // todo now that we know which content type, which migration...
-    updateSelectedConfigOption({uid,configTitle});
+    updateSelectedConfigOption({uid, configTitle});
     updateTargetConfigName(configTitle);
     toggleSelectedMenu('configs') // todo move to constants
   };
