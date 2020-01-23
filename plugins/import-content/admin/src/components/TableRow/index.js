@@ -7,7 +7,6 @@ const Row = styled.li`
   }
   background-color:${({selected}) => (selected ? colors.leftMenu.lightGrey : "")};
   width:100%;
-  padding-top: 18px;
   &.clickable {
     &:hover {
       cursor: pointer;

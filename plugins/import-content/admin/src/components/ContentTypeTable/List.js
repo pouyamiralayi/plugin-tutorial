@@ -19,7 +19,7 @@ const List = styled.ul`
     display: flex;
     justify-content: space-between;
     padding-left: 30px;
-    height: 34px;
+    height: 52px;
     border-radius: 2px;
     &::before {
       content: '•';

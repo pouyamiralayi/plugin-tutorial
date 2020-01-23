@@ -28,6 +28,7 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, onConfigClicked, onCo
         <a>
           <span
             style={{
+              paddingTop:18,
               display: 'flex',
               width: '150px',
               textAlign: 'right',
@@ -36,7 +37,7 @@ const ContentTypeTable = ({onModelChecked, onModelClicked, onConfigClicked, onCo
             onClick={ev => {
               onModelClicked({uid})
             }}>{label}</span> &nbsp;
-          <div style={{marginTop: 3}}>
+          <div style={{marginTop: 3, paddingTop:18,}}>
             <CheckboxWrapper>
               <Label onClick={(e) => {
                 // e.persist();

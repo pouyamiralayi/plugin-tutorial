@@ -34,7 +34,7 @@ const ContentTypeTableSubList = ({title, models, isFirstItem, isSearching, onCli
         }}
         className={['clickable']}>
         <a>
-          <span>{name}</span> &nbsp;
+          <span style={{paddingTop:18}}>{name}</span> &nbsp;
         </a>
       </TableRow>
     )
