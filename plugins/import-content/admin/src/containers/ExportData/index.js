@@ -1,6 +1,6 @@
 import React, {useEffect, useReducer, useState} from 'react';
 import {reducer, store} from "../DataManagerProvider/reducer";
-import {get, has, isEmpty, isEqual} from "lodash";
+import {get, has, isEmpty} from "lodash";
 import {
   ATTRIBUTES,
   LOADING,
@@ -9,29 +9,22 @@ import {
   SET_ATTRIBUTES,
   SET_COMPONENTS,
   SET_MODELS,
-  SET_TARGET,
+  SET_TARGET, TARGET,
   TOGGLE_LOADING
 } from "../../utils/constants";
 import ListViewContext from "../../utils/ListViewContext";
 import ContentTypeTree from "../../components/ContentTypeTree";
-import {LoadingIndicator, request, useGlobalContext} from 'strapi-helper-plugin'
-import Block from "../../components/Block";
+import {LoadingIndicator, request} from 'strapi-helper-plugin'
 import ContentTypeTable from "../../components/ContentTypeTable";
 import Row from '../../components/Row'
-import LeftMenu from "../LeftMenu";
 import Wrapper from './Wrapper'
-import {Button} from '@buffetjs/core'
 import {Header} from '@buffetjs/custom'
-import makeSearch from "strapi-plugin-content-type-builder/admin/src/utils/makeSearch";
-import getTrad from "../../utils/getTrad";
-import {FormattedMessage} from 'react-intl';
 
 const ExportData = () => {
   const [state, dispatch] = useReducer(reducer, store);
   const [targetModelName, updateTargetModelName] = useState("");
-  const [targetModelObj, updateTargetModelObj] = useState("");
-  const [targetUid, updateTargetUid] = useState("");
   const [targetName, updateTargetName] = useState("");
+  const [targetDescription, updateTargetDescription] = useState("There is no description");
 
   const [modelOptions, updateModelOptions] = useState([]);
   const [selectedOption, updateSelectedOption] = useState("");
@@ -78,7 +71,7 @@ const ExportData = () => {
         },
       ],
     title: {
-      targetModelName,
+      label: targetName,
       cta:
         {
           icon: 'pencil-alt',
@@ -102,8 +95,12 @@ const ExportData = () => {
           },
         }
     },
-    // content: getDescription(),
+    content: targetDescription,
   };
+
+  // useEffect( () => {
+  //
+  // }, [targetModelDe]);
 
   /*1.receive models & components*/
   useEffect(() => {
@@ -138,6 +135,16 @@ const ExportData = () => {
     // const attrs_array = attrs && convertAttrObjToArray(attrs); // todo move this to sub-components state
     // attrs_array && dispatch({type: SET_ATTRIBUTES_ARRAY, payload: attrs_array})
   }, [targetModelName]);
+
+
+  useEffect(() => {
+    const target = get(state, [TARGET], []);
+    if (!target) return;
+    const targetName = get(target, [SCHEMA, 'name'], "");
+    const targetDescription = get(target, [SCHEMA, 'description'], "There is no description");
+    updateTargetName(targetName);
+    updateTargetDescription(targetDescription)
+  }, [state]);
 
   const onSelectTarget = (targetModel) => {
     updateTargetModelName(targetModel)
