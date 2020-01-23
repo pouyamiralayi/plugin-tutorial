@@ -278,10 +278,12 @@ const ExportData = () => {
                     {/*    <Button color={'success'}>Generate</Button>*/}
                     {/*  </div>*/}
                     {/*</Row>*/}
-                    <Header {...headerProps}/>
                     <Row>
                       {!isEmpty(modelOptions) && (
-                        <ContentTypeTree className={''}/>
+                        <div>
+                          <Header {...headerProps}/>
+                          <ContentTypeTree className={''}/>
+                        </div>
                       )}
                     </Row>
                   </>
